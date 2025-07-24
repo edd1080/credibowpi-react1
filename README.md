@@ -1,145 +1,282 @@
-# CrediBowpi Mobile
+# 📱 CrediBowpi Mobile App
 
-An offline-first React Native mobile application for field credit agents, enabling them to capture, manage, and evaluate credit applications without internet dependency.
+A React Native mobile application for CrediBowpi field agents to manage credit applications with offline-first capabilities and real-time dashboard metrics.
 
-## Project Structure
+![CrediBowpi](https://img.shields.io/badge/CrediBowpi-Mobile%20App-2A3575?style=for-the-badge)
+![React Native](https://img.shields.io/badge/React%20Native-Expo-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite)
 
-This project follows Feature-Driven Development (FDD) with Atomic Design principles:
+## 🚀 Features
 
-```
-src/
-├── components/          # UI Components (Atomic Design)
-│   ├── atoms/          # Basic building blocks (Button, Typography, etc.)
-│   ├── molecules/      # Component combinations (FormField, DocumentCard, etc.)
-│   └── organisms/      # Complex UI sections (AppShell, FormSection, etc.)
-├── features/           # Feature modules
-│   ├── auth/          # Authentication
-│   ├── dashboard/     # Home dashboard
-│   ├── kyc/           # Know Your Customer
-│   ├── forms/         # Application forms
-│   ├── signature/     # Digital signature
-│   ├── sync/          # Offline synchronization
-│   └── settings/      # User settings
-├── services/          # External services (API, Database, Storage)
-├── stores/            # Zustand state management
-├── utils/             # Utility functions
-├── types/             # TypeScript definitions
-├── hooks/             # Custom React hooks
-├── navigation/        # Navigation configuration
-└── constants/         # App constants (colors, typography, spacing)
-```
+### 📊 Agent Dashboard
+- **Real-time Metrics**: Today's applications, completion rates, sync status
+- **KPI Visualization**: Weekly summaries and performance indicators  
+- **Sync Management**: Manual sync trigger with status indicators
+- **Quick Actions**: Nueva Solicitud CTA and navigation shortcuts
 
-## Tech Stack
+### 🔐 Security & Authentication
+- **Secure Login**: Biometric and PIN-based authentication
+- **Token Management**: JWT-based session handling
+- **Data Encryption**: SecureStore for sensitive information
+- **Offline Security**: Encrypted local database
 
-- **Framework:** React Native with Expo SDK
-- **Language:** TypeScript with strict configuration
-- **State Management:** Zustand
-- **Local Database:** SQLite with encryption
-- **Secure Storage:** Expo SecureStore
-- **Navigation:** React Navigation v6
-- **Forms:** React Hook Form with Zod validation
-- **Styling:** Styled Components with design tokens
+### 📱 Offline-First Architecture
+- **SQLite Database**: Local data persistence
+- **Automatic Sync**: Background synchronization when online
+- **Conflict Resolution**: Smart merge strategies
+- **Queue Management**: Pending operations tracking
 
-## Design System
+### 🎨 Design System
+- **CrediBowpi Branding**: Deep Blue (#2A3575), Secondary Blue (#2973E7), Cyan (#5DBDF9)
+- **8pt Grid System**: Consistent spacing and layout
+- **Typography Hierarchy**: Accessible text scaling
+- **Component Library**: Reusable atoms, molecules, and organisms
 
-### Colors
+## 🛠 Tech Stack
 
-- Primary Deep Blue: #2A3575
-- Secondary Blue: #2973E7
-- Tertiary Cyan: #5DBDF9
+| Category | Technology |
+|----------|------------|
+| **Framework** | React Native with Expo SDK 53 |
+| **Language** | TypeScript with strict mode |
+| **State Management** | Zustand with persistence |
+| **Database** | SQLite (expo-sqlite) |
+| **Security** | Expo SecureStore + Crypto |
+| **Navigation** | React Navigation v6 |
+| **Testing** | Jest + React Native Testing Library |
+| **Code Quality** | ESLint + Prettier |
 
-### Typography
-
-- Font Family: DM Sans
-- Scale: H1-H3, Body L/M/S, Label, Caption
-
-### Spacing
-
-- 8pt grid system with 4pt micro-adjustments
-- Minimum touch target: 44x44pt
-
-## Getting Started
+## 🏃‍♂️ Quick Start
 
 ### Prerequisites
-
-- Node.js (v18 or higher)
+- Node.js 18+ 
 - npm or yarn
-- Expo CLI
-- iOS Simulator (for iOS development)
-- Android Studio (for Android development)
+- Expo CLI (`npm install -g @expo/cli`)
+- iOS Simulator or Android Emulator
 
 ### Installation
 
-1. Install dependencies:
-
 ```bash
+# Clone the repository
+git clone <your-repository-url>
+cd credibowpi-mobile
+
+# Install dependencies
 npm install
+
+# Start the development server
+npx expo start
+
+# Run on specific platform
+npx expo start --ios     # iOS Simulator
+npx expo start --android # Android Emulator
 ```
 
-2. Start the development server:
+### 🔑 Testing Credentials
 
+```
+Email: test@credibowpi.com
+Password: password
+```
+
+## 📁 Project Structure
+
+```
+credibowpi-mobile/
+├── src/
+│   ├── components/              # UI Components
+│   │   ├── atoms/              # Basic components (Button, Typography)
+│   │   ├── molecules/          # Composite components (MetricCard, SyncStatus)
+│   │   └── organisms/          # Complex components (AppShell)
+│   ├── screens/                # Screen components
+│   │   ├── HomeScreen.tsx      # Agent dashboard with metrics
+│   │   ├── LoginScreen.tsx     # Authentication screen
+│   │   └── ...
+│   ├── services/               # Business logic
+│   │   ├── database.ts         # SQLite operations
+│   │   ├── syncService.ts      # Sync management
+│   │   ├── metricsService.ts   # KPI calculations
+│   │   └── ...
+│   ├── stores/                 # State management
+│   │   ├── authStore.ts        # Authentication state
+│   │   └── appStore.ts         # Application state
+│   ├── types/                  # TypeScript definitions
+│   ├── constants/              # Design tokens
+│   └── navigation/             # Navigation setup
+├── .kiro/specs/                # Feature specifications
+├── DESIGN_SYSTEM.md            # Design guidelines
+├── OFFLINE_INFRASTRUCTURE.md   # Architecture docs
+└── README.md
+```
+
+## 🎯 Key Implementations
+
+### Dashboard Metrics (Task 6 ✅)
+- **MetricCard Component**: Displays KPIs with brand styling
+- **Real-time Calculations**: Today's applications, sync status, weekly summaries
+- **Interactive Elements**: Tap to sync, pull-to-refresh
+- **Status Indicators**: Online/offline, sync progress, error states
+
+### Authentication System
+- **Mock Login**: Test credentials for development
+- **Secure Storage**: Encrypted token persistence
+- **Session Management**: Automatic token refresh
+- **Biometric Support**: Ready for production integration
+
+### Offline Infrastructure
+- **SQLite Schema**: Applications, documents, sync queue tables
+- **Encryption**: AES-256 for sensitive data
+- **Sync Queue**: Pending operations management
+- **Conflict Resolution**: Last-write-wins strategy
+
+## 🧪 Development
+
+### Running Tests
 ```bash
-npm start
+npm test                    # Run all tests
+npm test -- --watch        # Watch mode
+npm test -- --coverage     # Coverage report
 ```
 
-3. Run on specific platform:
-
+### Code Quality
 ```bash
-npm run ios     # iOS Simulator
-npm run android # Android Emulator
-npm run web     # Web browser
+npm run lint               # ESLint check
+npm run lint:fix           # Auto-fix issues
+npm run type-check         # TypeScript validation
+npm run format             # Prettier formatting
 ```
 
-### Development Scripts
-
+### Building
 ```bash
-npm run type-check    # TypeScript type checking
-npm run format        # Format code with Prettier
-npm run format:check  # Check code formatting
+npx expo build:ios        # iOS build
+npx expo build:android    # Android build
 ```
 
-## Architecture Principles
+## 📊 Dashboard Features
 
-### Offline-First
+### Metrics Cards
+- **Nuevas Hoy**: Today's new applications
+- **En Progreso**: Active form submissions  
+- **Completadas**: Ready for review
+- **Pendientes Sync**: Items awaiting synchronization
 
-- All data is stored locally using encrypted SQLite
-- Automatic synchronization when online
-- Queue-based retry mechanism for failed syncs
+### KPI Summary
+- **Total Today**: Combined daily metrics
+- **Completion Rate**: Weekly success percentage
+- **Sync Status**: Real-time sync health
 
-### Feature-Driven Development
+### Interactive Elements
+- **Manual Sync**: Tap sync indicator to trigger
+- **Pull to Refresh**: Update metrics data
+- **Quick Actions**: Nueva Solicitud CTA button
 
-- Each feature is self-contained with its own components, hooks, services, and types
-- Clear separation of concerns
-- Easy to test and maintain
+## 🔧 Configuration
 
-### Clean Architecture
+### Environment Setup
+```bash
+# Development
+cp .env.example .env.development
 
-- Presentation Layer: React Native components and screens
-- Application Layer: Business logic, state management, and use cases
-- Infrastructure Layer: External services, database, and storage
+# Production  
+cp .env.example .env.production
+```
 
-## Core Dependencies
+### Database Migrations
+```bash
+# Reset database (development only)
+npx expo start --clear
+```
 
-- **zustand**: Lightweight state management
-- **expo-sqlite**: Local database with encryption
-- **expo-secure-store**: Secure token storage
-- **@react-navigation/native**: Navigation framework
-- **react-hook-form**: Form handling
-- **zod**: Schema validation
-- **styled-components**: CSS-in-JS styling
+## 🚀 Deployment
 
-## Next Steps
+### Expo Application Services (EAS)
+```bash
+# Install EAS CLI
+npm install -g eas-cli
 
-This is the initial project setup. The next tasks will implement:
+# Configure project
+eas build:configure
 
-1. Design system foundation (colors, typography, spacing)
-2. Offline-first data infrastructure
-3. Authentication flow
-4. Navigation structure
-5. Feature modules (KYC, forms, signature, etc.)
+# Build for stores
+eas build --platform all
+```
 
-## Requirements Addressed
+### Over-the-Air Updates
+```bash
+# Publish update
+eas update --branch production
+```
 
-- ✅ 1.6: Secure token storage using SecureStore
-- ✅ 6.1: Encrypted SQLite for offline data storage
-- ✅ 6.2: Zustand for offline-first state management
+## 🤝 Contributing
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Commit Convention
+```
+feat: add new feature
+fix: bug fix
+docs: documentation update
+style: formatting changes
+refactor: code restructuring
+test: add tests
+chore: maintenance tasks
+```
+
+## 📝 Documentation
+
+- [Design System](./DESIGN_SYSTEM.md) - UI guidelines and components
+- [Offline Infrastructure](./OFFLINE_INFRASTRUCTURE.md) - Architecture details
+- [API Documentation](./docs/api.md) - Service interfaces
+- [Testing Guide](./docs/testing.md) - Testing strategies
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Metro bundler issues:**
+```bash
+npx expo start --clear
+```
+
+**TypeScript errors:**
+```bash
+npx tsc --noEmit --skipLibCheck
+```
+
+**Dependency conflicts:**
+```bash
+npm install --legacy-peer-deps
+```
+
+## 📄 License
+
+**Private - CrediBowpi Internal Use Only**
+
+This project is proprietary software developed for CrediBowpi's internal use. Unauthorized copying, distribution, or modification is strictly prohibited.
+
+---
+
+## 🎉 Recent Updates
+
+### v1.0.0 - Agent Dashboard Implementation
+- ✅ Complete dashboard with real-time metrics
+- ✅ Sync status management with manual trigger  
+- ✅ MetricCard component with brand styling
+- ✅ KPI calculations and weekly summaries
+- ✅ Offline/online state indicators
+- ✅ Pull-to-refresh functionality
+
+### Next Steps
+- [ ] KYC document capture flow
+- [ ] Credit application forms
+- [ ] Advanced sync conflict resolution
+- [ ] Push notifications
+- [ ] Biometric authentication integration
+
+---
+
+**Built with ❤️ by the CrediBowpi Development Team**
