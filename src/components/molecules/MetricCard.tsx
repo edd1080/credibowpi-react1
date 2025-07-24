@@ -4,7 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { Typography, Icons } from '../atoms';
+import { Typography } from '../atoms';
+import { SimpleIcons } from '../atoms/SimpleIcon';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 
@@ -27,7 +28,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   value,
   subtitle,
   color = 'primary',
-  icon,
+  iconName,
   trend,
   onPress,
   size = 'medium',
@@ -66,13 +67,15 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     
     switch (trend.direction) {
       case 'up':
-        return <Icons.trending_up size={12} color={colors.success} />;
+        return <SimpleIcons.trending_up size={12} color={colors.success} />;
       case 'down':
-        return <Icons.trending_up size={12} color={colors.error} style={{ transform: [{ rotate: '180deg' }] }} />;
+        return <SimpleIcons.trending_up size={12} color={colors.error} />;
       default:
-        return <Icons.trending_up size={12} color={colors.text.secondary} style={{ transform: [{ rotate: '90deg' }] }} />;
+        return <SimpleIcons.trending_up size={12} color={colors.text.secondary} />;
     }
   };
+
+  const colorScheme = getColorScheme();
 
   const getMetricIcon = () => {
     if (!iconName) return null;
@@ -82,19 +85,19 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     
     switch (iconName) {
       case 'new_applications':
-        return <Icons.add size={iconSize} color={iconColor} />;
+        return <SimpleIcons.add size={iconSize} color={iconColor} />;
       case 'in_progress':
-        return <Icons.hourglass_empty size={iconSize} color={iconColor} />;
+        return <SimpleIcons.hourglass_empty size={iconSize} color={iconColor} />;
       case 'completed':
-        return <Icons.check_circle size={iconSize} color={iconColor} />;
+        return <SimpleIcons.check_circle size={iconSize} color={iconColor} />;
       case 'sync_pending':
-        return <Icons.sync size={iconSize} color={iconColor} />;
+        return <SimpleIcons.sync size={iconSize} color={iconColor} />;
       case 'analytics':
-        return <Icons.analytics size={iconSize} color={iconColor} />;
+        return <SimpleIcons.analytics size={iconSize} color={iconColor} />;
       case 'trending_up':
-        return <Icons.trending_up size={iconSize} color={iconColor} />;
+        return <SimpleIcons.trending_up size={iconSize} color={iconColor} />;
       default:
-        return <Icons.dashboard size={iconSize} color={iconColor} />;
+        return <SimpleIcons.dashboard size={iconSize} color={iconColor} />;
     }
   };
 
@@ -111,7 +114,6 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     }
   };
 
-  const colorScheme = getColorScheme();
   const Container = onPress ? TouchableOpacity : View;
 
   return (

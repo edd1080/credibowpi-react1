@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
+import { SimpleIcons } from '../components/atoms/SimpleIcon';
 
-// Import screens (we'll create these)
+// Import screens
 import { HomeScreen } from '../screens/HomeScreen';
 import { SolicitudesScreen } from '../screens/SolicitudesScreen';
 import { AjustesScreen } from '../screens/AjustesScreen';
@@ -18,23 +19,26 @@ export type TabParamList = {
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
-// Simple icon components (in a real app, you'd use react-native-vector-icons or similar)
+// Tab icon components using SimpleIcons
 const HomeIcon = ({ focused }: { focused: boolean }) => (
-  <View style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
-    <Text style={[styles.iconText, focused && styles.iconTextFocused]}>🏠</Text>
-  </View>
+  <SimpleIcons.home 
+    size={24} 
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  />
 );
 
 const SolicitudesIcon = ({ focused }: { focused: boolean }) => (
-  <View style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
-    <Text style={[styles.iconText, focused && styles.iconTextFocused]}>📋</Text>
-  </View>
+  <SimpleIcons.assignment 
+    size={24} 
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  />
 );
 
 const AjustesIcon = ({ focused }: { focused: boolean }) => (
-  <View style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
-    <Text style={[styles.iconText, focused && styles.iconTextFocused]}>⚙️</Text>
-  </View>
+  <SimpleIcons.settings 
+    size={24} 
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  />
 );
 
 export const TabNavigator: React.FC = () => {
@@ -98,22 +102,5 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.space4,
   },
   
-  iconContainer: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  
-  iconContainerFocused: {
-    // Add any focused state styling if needed
-  },
-  
-  iconText: {
-    fontSize: 20,
-  },
-  
-  iconTextFocused: {
-    // Add any focused state styling if needed
-  },
+
 });
