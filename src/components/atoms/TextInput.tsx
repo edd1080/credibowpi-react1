@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   TextInput as RNTextInput,
   View,
@@ -22,7 +22,7 @@ export interface TextInputProps extends Omit<RNTextInputProps, 'style'> {
   inputStyle?: any;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({
+export const TextInput: React.FC<TextInputProps> = React.memo(({
   label,
   error,
   helperText,
@@ -37,23 +37,55 @@ export const TextInput: React.FC<TextInputProps> = ({
 
   const hasError = !!error;
 
+  // Memoize callbacks to prevent unnecessary re-renders
+  const handleFocus = useCallback((e: any) => {
+    setIsFocused(true);
+    props.onFocus?.(e);
+  }, [props.onFocus]);
+
+  const handleBlur = useCallback((e: any) => {
+    setIsFocused(false);
+    props.onBlur?.(e);
+  }, [props.onBlur]);
+
+  const handleRightIconPress = useCallback(() => {
+    onRightIconPress?.();
+  }, [onRightIconPress]);
+
+  // Memoize styles to prevent recalculation
+  const labelStyle = useMemo(() => [
+    styles.label,
+    hasError && styles.labelError,
+    isFocused && styles.labelFocused,
+  ], [hasError, isFocused]);
+
+  const inputContainerStyle = useMemo(() => [
+    styles.inputContainer,
+    isFocused && styles.inputContainerFocused,
+    hasError && styles.inputContainerError,
+  ], [isFocused, hasError]);
+
+  const inputTextStyle = useMemo(() => [
+    styles.input,
+    leftIcon && styles.inputWithLeftIcon,
+    rightIcon && styles.inputWithRightIcon,
+    inputStyle,
+  ], [leftIcon, rightIcon, inputStyle]);
+
+  const helperTextStyle = useMemo(() => [
+    styles.helperText,
+    hasError && styles.errorText,
+  ], [hasError]);
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label && (
-        <Text style={[
-          styles.label,
-          hasError && styles.labelError,
-          isFocused && styles.labelFocused,
-        ]}>
+        <Text style={labelStyle}>
           {label}
         </Text>
       )}
       
-      <View style={[
-        styles.inputContainer,
-        isFocused && styles.inputContainerFocused,
-        hasError && styles.inputContainerError,
-      ]}>
+      <View style={inputContainerStyle}>
         {leftIcon && (
           <View style={styles.leftIconContainer}>
             {leftIcon}
@@ -61,29 +93,22 @@ export const TextInput: React.FC<TextInputProps> = ({
         )}
         
         <RNTextInput
-          style={[
-            styles.input,
-            leftIcon && styles.inputWithLeftIcon,
-            rightIcon && styles.inputWithRightIcon,
-            inputStyle,
-          ]}
+          style={inputTextStyle}
           placeholderTextColor={colors.text.tertiary}
-          onFocus={(e) => {
-            setIsFocused(true);
-            props.onFocus?.(e);
-          }}
-          onBlur={(e) => {
-            setIsFocused(false);
-            props.onBlur?.(e);
-          }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          autoCorrect={false}
+          autoCapitalize="none"
+          spellCheck={false}
           {...props}
         />
         
         {rightIcon && (
           <TouchableOpacity
             style={styles.rightIconContainer}
-            onPress={onRightIconPress}
+            onPress={handleRightIconPress}
             disabled={!onRightIconPress}
+            activeOpacity={0.7}
           >
             {rightIcon}
           </TouchableOpacity>
@@ -91,16 +116,13 @@ export const TextInput: React.FC<TextInputProps> = ({
       </View>
       
       {(error || helperText) && (
-        <Text style={[
-          styles.helperText,
-          hasError && styles.errorText,
-        ]}>
+        <Text style={helperTextStyle}>
           {error || helperText}
         </Text>
       )}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

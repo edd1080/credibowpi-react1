@@ -4,7 +4,4 @@
 export * from './Button';
 export * from './Typography';
 export * from './TextInput';
-
-// TODO: Implement additional atomic components
-// export * from './Input';
-// export * from './Icon';
+export * from './Icon';

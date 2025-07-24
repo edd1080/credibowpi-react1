@@ -151,7 +151,7 @@ export const HomeScreen: React.FC = () => {
                   value={card.value}
                   subtitle={card.subtitle}
                   color={card.color}
-                  icon={card.icon}
+                  iconName={card.iconName}
                   onPress={card.id === 'pending-sync' ? handleSync : undefined}
                 />
               </View>

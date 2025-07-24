@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { Typography } from '../atoms';
+import { Typography, Icons } from '../atoms';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 
@@ -31,11 +31,11 @@ export const SyncStatusIndicator: React.FC<SyncStatusIndicatorProps> = ({
       case 'syncing':
         return <ActivityIndicator size="small" color={colors.primary.blue} />;
       case 'success':
-        return <Typography variant="bodyS" color="success">✓</Typography>;
+        return <Icons.check_circle size={16} color={colors.success} />;
       case 'error':
-        return <Typography variant="bodyS" color="error">⚠️</Typography>;
+        return <Icons.error size={16} color={colors.error} />;
       default:
-        return <Typography variant="bodyS" color="tertiary">🔄</Typography>;
+        return <Icons.sync size={16} color={colors.text.tertiary} />;
     }
   };
 

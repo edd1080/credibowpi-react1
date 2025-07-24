@@ -33,5 +33,8 @@ yarn-error.*
 # local env files
 .env*.local
 
+# npm auth tokens
+.npmrc
+
 # typescript
 *.tsbuildinfo

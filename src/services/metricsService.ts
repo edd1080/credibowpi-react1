@@ -29,7 +29,7 @@ export interface MetricCard {
     percentage: number;
   };
   color: 'primary' | 'success' | 'warning' | 'error';
-  icon?: string;
+  iconName?: 'new_applications' | 'in_progress' | 'completed' | 'sync_pending' | 'analytics' | 'trending_up';
 }
 
 export class MetricsService {
@@ -111,7 +111,7 @@ export class MetricsService {
         value: metrics.today.newApplications,
         subtitle: 'Solicitudes iniciadas',
         color: 'primary',
-        icon: '📝',
+        iconName: 'new_applications',
       },
       {
         id: 'in-progress',
@@ -119,7 +119,7 @@ export class MetricsService {
         value: metrics.today.inProgress,
         subtitle: 'Formularios activos',
         color: 'warning',
-        icon: '⏳',
+        iconName: 'in_progress',
       },
       {
         id: 'completed',
@@ -127,7 +127,7 @@ export class MetricsService {
         value: metrics.today.completed,
         subtitle: 'Listas para revisar',
         color: 'success',
-        icon: '✅',
+        iconName: 'completed',
       },
       {
         id: 'pending-sync',
@@ -137,7 +137,7 @@ export class MetricsService {
           ? `${metrics.sync.failedCount} con error` 
           : 'Para sincronizar',
         color: metrics.sync.failedCount > 0 ? 'error' : 'primary',
-        icon: '🔄',
+        iconName: 'sync_pending',
       },
     ];
   }

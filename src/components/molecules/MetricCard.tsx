@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { Typography } from '../atoms';
+import { Typography, Icons } from '../atoms';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 
@@ -13,7 +13,7 @@ export interface MetricCardProps {
   value: string | number;
   subtitle?: string | undefined;
   color?: 'primary' | 'success' | 'warning' | 'error';
-  icon?: string | undefined;
+  iconName?: 'new_applications' | 'in_progress' | 'completed' | 'sync_pending' | 'analytics' | 'trending_up';
   trend?: {
     direction: 'up' | 'down' | 'neutral';
     percentage: number;
@@ -66,11 +66,35 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     
     switch (trend.direction) {
       case 'up':
-        return '↗️';
+        return <Icons.trending_up size={12} color={colors.success} />;
       case 'down':
-        return '↘️';
+        return <Icons.trending_up size={12} color={colors.error} style={{ transform: [{ rotate: '180deg' }] }} />;
       default:
-        return '→';
+        return <Icons.trending_up size={12} color={colors.text.secondary} style={{ transform: [{ rotate: '90deg' }] }} />;
+    }
+  };
+
+  const getMetricIcon = () => {
+    if (!iconName) return null;
+    
+    const iconColor = colorScheme.accent;
+    const iconSize = size === 'large' ? 24 : size === 'small' ? 16 : 20;
+    
+    switch (iconName) {
+      case 'new_applications':
+        return <Icons.add size={iconSize} color={iconColor} />;
+      case 'in_progress':
+        return <Icons.hourglass_empty size={iconSize} color={iconColor} />;
+      case 'completed':
+        return <Icons.check_circle size={iconSize} color={iconColor} />;
+      case 'sync_pending':
+        return <Icons.sync size={iconSize} color={iconColor} />;
+      case 'analytics':
+        return <Icons.analytics size={iconSize} color={iconColor} />;
+      case 'trending_up':
+        return <Icons.trending_up size={iconSize} color={iconColor} />;
+      default:
+        return <Icons.dashboard size={iconSize} color={iconColor} />;
     }
   };
 
@@ -104,9 +128,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     >
       {/* Header with icon and title */}
       <View style={styles.header}>
-        {icon && (
+        {iconName && (
           <View style={styles.iconContainer}>
-            <Typography variant="bodyM">{icon}</Typography>
+            {getMetricIcon()}
           </View>
         )}
         <Typography
@@ -132,9 +156,12 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         
         {trend && (
           <View style={styles.trendContainer}>
-            <Typography variant="caption" color={getTrendColor()}>
-              {getTrendIcon()} {trend.percentage}%
-            </Typography>
+            <View style={styles.trendContent}>
+              {getTrendIcon()}
+              <Typography variant="caption" color={getTrendColor()} style={styles.trendText}>
+                {trend.percentage}%
+              </Typography>
+            </View>
           </View>
         )}
       </View>
@@ -222,6 +249,15 @@ const styles = StyleSheet.create({
   
   trendContainer: {
     marginLeft: spacing.space8,
+  },
+  
+  trendContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
+  trendText: {
+    marginLeft: spacing.space4,
   },
   
   subtitle: {

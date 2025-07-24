@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
+  StatusBar,
+  Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineStatusBanner, SyncStatusIndicator, Breadcrumb, BreadcrumbItem } from '../molecules';
 import { SyncStatus } from '../molecules/SyncStatusIndicator';
 import { colors } from '../../constants/colors';
@@ -22,6 +24,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   showSyncStatus = true,
   onSyncPress,
 }) => {
+  const insets = useSafeAreaInsets();
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
   const [pendingCount, setPendingCount] = useState(0);
   const [lastSyncTime, setLastSyncTime] = useState<Date | undefined>();
@@ -54,7 +57,14 @@ export const AppShell: React.FC<AppShellProps> = ({
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Status Bar */}
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor={colors.background.primary}
+        translucent={false}
+      />
+      
       <OfflineStatusBanner
         onSyncPress={handleSyncPress}
         pendingCount={pendingCount}
@@ -70,7 +80,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         </View>
         
         {showSyncStatus && (
-          <View style={styles.syncStatusContainer}>
+          <View style={[styles.syncStatusContainer, { paddingBottom: insets.bottom }]}>
             <SyncStatusIndicator
               status={syncStatus}
               pendingCount={pendingCount}
@@ -80,7 +90,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
