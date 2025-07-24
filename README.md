@@ -131,7 +131,7 @@ credibowpi-mobile/
 
 ## 🧪 Development
 
-### Running Tests
+### Running Tests 
 ```bash
 npm test                    # Run all tests
 npm test -- --watch        # Watch mode
