@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Typography, Button, TextInput } from '../components/atoms';
+import { Typography, Button, TextInput, Icon } from '../components/atoms';
 import { useAuthStore } from '../stores/authStore';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
@@ -20,6 +20,7 @@ export const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [hasAttemptedLogin, setHasAttemptedLogin] = useState(false);
 
   const { login, isLoading, error, clearError } = useAuthStore();
 
@@ -51,8 +52,9 @@ export const LoginScreen: React.FC = () => {
   };
 
   const handleLogin = async () => {
+    setHasAttemptedLogin(true);
     clearError();
-    
+
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
 
@@ -97,7 +99,7 @@ export const LoginScreen: React.FC = () => {
                 CB
               </Typography>
             </View>
-            
+
             <Typography
               variant="h2"
               color="primary"
@@ -106,7 +108,7 @@ export const LoginScreen: React.FC = () => {
             >
               CrediBowpi
             </Typography>
-            
+
             <Typography
               variant="bodyM"
               color="secondary"
@@ -120,12 +122,11 @@ export const LoginScreen: React.FC = () => {
             <TextInput
               label="Correo electrónico"
               value={email}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setEmail(text);
-                if (emailError) validateEmail(text);
+                if (hasAttemptedLogin && emailError) validateEmail(text);
               }}
-              onBlur={() => validateEmail(email)}
-              error={emailError}
+              error={hasAttemptedLogin ? emailError : ''}
               placeholder="ejemplo@credibowpi.com"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -136,20 +137,19 @@ export const LoginScreen: React.FC = () => {
             <TextInput
               label="Contraseña"
               value={password}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setPassword(text);
-                if (passwordError) validatePassword(text);
+                if (hasAttemptedLogin && passwordError) validatePassword(text);
               }}
-              onBlur={() => validatePassword(password)}
-              error={passwordError}
+              error={hasAttemptedLogin ? passwordError : ''}
               placeholder="Ingresa tu contraseña"
               secureTextEntry={!showPassword}
               rightIcon={
-                <TouchableOpacity onPress={togglePasswordVisibility}>
-                  <Typography variant="caption" color="tertiary">
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
-                  </Typography>
-                </TouchableOpacity>
+                <Icon
+                  name={showPassword ? 'view-off-02' : 'view-02'}
+                  size={20}
+                  color={colors.text.tertiary}
+                />
               }
               onRightIconPress={togglePasswordVisibility}
               testID="password-input"
@@ -193,23 +193,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.primary,
   },
-  
+
   keyboardAvoidingView: {
     flex: 1,
   },
-  
+
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: spacing.space24,
     paddingVertical: spacing.space32,
   },
-  
+
   header: {
     alignItems: 'center',
     marginBottom: spacing.space48,
   },
-  
+
   logoContainer: {
     width: 64,
     height: 64,
@@ -219,20 +219,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.space16,
   },
-  
+
   title: {
     marginBottom: spacing.space8,
     textAlign: 'center',
   },
-  
+
   subtitle: {
     textAlign: 'center',
   },
-  
+
   form: {
     width: '100%',
   },
-  
+
   errorContainer: {
     marginBottom: spacing.space16,
     padding: spacing.space12,
@@ -241,11 +241,11 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: colors.error,
   },
-  
+
   loginButton: {
     marginBottom: spacing.space24,
   },
-  
+
   forgotPasswordButton: {
     alignItems: 'center',
     paddingVertical: spacing.space12,

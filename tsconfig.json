@@ -20,41 +20,18 @@
     "esModuleInterop": true,
     "moduleResolution": "bundler",
     "baseUrl": "./src",
-    "types": [
-      "jest"
-    ],
+    "types": ["jest"],
     "paths": {
-      "@/*": [
-        "*"
-      ],
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/features/*": [
-        "features/*"
-      ],
-      "@/services/*": [
-        "services/*"
-      ],
-      "@/utils/*": [
-        "utils/*"
-      ],
-      "@/types/*": [
-        "types/*"
-      ],
-      "@/hooks/*": [
-        "hooks/*"
-      ],
-      "@/stores/*": [
-        "stores/*"
-      ]
+      "@/*": ["*"],
+      "@/components/*": ["components/*"],
+      "@/features/*": ["features/*"],
+      "@/services/*": ["services/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/stores/*": ["stores/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

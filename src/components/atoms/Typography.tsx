@@ -3,8 +3,23 @@ import { Text, TextStyle, StyleSheet } from 'react-native';
 import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 
-export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'bodyL' | 'bodyM' | 'bodyS' | 'label' | 'caption';
-export type TypographyColor = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'success' | 'warning' | 'error';
+export type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'bodyL'
+  | 'bodyM'
+  | 'bodyS'
+  | 'label'
+  | 'caption';
+export type TypographyColor =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'inverse'
+  | 'success'
+  | 'warning'
+  | 'error';
 export type TypographyWeight = 'regular' | 'medium' | 'bold';
 
 export interface TypographyProps {
@@ -35,11 +50,7 @@ export const Typography: React.FC<TypographyProps> = ({
   ];
 
   return (
-    <Text
-      style={textStyles}
-      numberOfLines={numberOfLines}
-      testID={testID}
-    >
+    <Text style={textStyles} numberOfLines={numberOfLines} testID={testID}>
       {children}
     </Text>
   );

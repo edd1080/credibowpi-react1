@@ -26,9 +26,18 @@ export class SecureStorageService {
   // Token management
   async storeAuthTokens(tokens: AuthTokens): Promise<void> {
     try {
-      await SecureStore.setItemAsync(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
-      await SecureStore.setItemAsync(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
-      await SecureStore.setItemAsync('token_expires_at', tokens.expiresAt.toString());
+      await SecureStore.setItemAsync(
+        STORAGE_KEYS.ACCESS_TOKEN,
+        tokens.accessToken
+      );
+      await SecureStore.setItemAsync(
+        STORAGE_KEYS.REFRESH_TOKEN,
+        tokens.refreshToken
+      );
+      await SecureStore.setItemAsync(
+        'token_expires_at',
+        tokens.expiresAt.toString()
+      );
     } catch (error) {
       console.error('Failed to store auth tokens:', error);
       throw new Error('Failed to store authentication tokens');
@@ -37,8 +46,12 @@ export class SecureStorageService {
 
   async getAuthTokens(): Promise<AuthTokens | null> {
     try {
-      const accessToken = await SecureStore.getItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
-      const refreshToken = await SecureStore.getItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
+      const accessToken = await SecureStore.getItemAsync(
+        STORAGE_KEYS.ACCESS_TOKEN
+      );
+      const refreshToken = await SecureStore.getItemAsync(
+        STORAGE_KEYS.REFRESH_TOKEN
+      );
       const expiresAtStr = await SecureStore.getItemAsync('token_expires_at');
 
       if (!accessToken || !refreshToken || !expiresAtStr) {
@@ -74,8 +87,8 @@ export class SecureStorageService {
 
       const now = Date.now();
       const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
-      
-      return tokens.expiresAt > (now + bufferTime);
+
+      return tokens.expiresAt > now + bufferTime;
     } catch (error) {
       console.error('Failed to check token validity:', error);
       return false;
@@ -85,7 +98,10 @@ export class SecureStorageService {
   // User data management
   async storeUserData(userData: UserData): Promise<void> {
     try {
-      await SecureStore.setItemAsync(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+      await SecureStore.setItemAsync(
+        STORAGE_KEYS.USER_DATA,
+        JSON.stringify(userData)
+      );
     } catch (error) {
       console.error('Failed to store user data:', error);
       throw new Error('Failed to store user data');
@@ -94,7 +110,9 @@ export class SecureStorageService {
 
   async getUserData(): Promise<UserData | null> {
     try {
-      const userDataStr = await SecureStore.getItemAsync(STORAGE_KEYS.USER_DATA);
+      const userDataStr = await SecureStore.getItemAsync(
+        STORAGE_KEYS.USER_DATA
+      );
       if (!userDataStr) return null;
 
       return JSON.parse(userDataStr);
@@ -116,13 +134,18 @@ export class SecureStorageService {
   // Encryption key management
   async getOrCreateEncryptionKey(): Promise<string> {
     try {
-      let encryptionKey = await SecureStore.getItemAsync(STORAGE_KEYS.ENCRYPTION_KEY);
-      
+      let encryptionKey = await SecureStore.getItemAsync(
+        STORAGE_KEYS.ENCRYPTION_KEY
+      );
+
       if (!encryptionKey) {
         // Generate a new encryption key
         const Crypto = require('expo-crypto');
         encryptionKey = Crypto.randomUUID() + Crypto.randomUUID();
-        await SecureStore.setItemAsync(STORAGE_KEYS.ENCRYPTION_KEY, encryptionKey);
+        await SecureStore.setItemAsync(
+          STORAGE_KEYS.ENCRYPTION_KEY,
+          encryptionKey
+        );
         return encryptionKey;
       }
 
@@ -137,7 +160,7 @@ export class SecureStorageService {
   async getOrCreateDeviceId(): Promise<string> {
     try {
       let deviceId = await SecureStore.getItemAsync(STORAGE_KEYS.DEVICE_ID);
-      
+
       if (!deviceId) {
         const Crypto = require('expo-crypto');
         deviceId = Crypto.randomUUID();
@@ -181,7 +204,7 @@ export class SecureStorageService {
   // For debugging - check what's stored (remove in production)
   async getStorageInfo(): Promise<Record<string, boolean>> {
     const info: Record<string, boolean> = {};
-    
+
     for (const [key, value] of Object.entries(STORAGE_KEYS)) {
       try {
         const item = await SecureStore.getItemAsync(value);

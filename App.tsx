@@ -1,6 +1,11 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { useFonts, DMSans_400Regular, DMSans_500Medium, DMSans_700Bold } from '@expo-google-fonts/dm-sans';
+import {
+  useFonts,
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold,
+} from '@expo-google-fonts/dm-sans';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { AppNavigator } from './src/navigation';

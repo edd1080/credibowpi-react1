@@ -2,9 +2,9 @@
 export const colors = {
   // Primary Colors - CrediBowpi Brand Palette
   primary: {
-    deepBlue: '#2A3575',    // Primary Deep Blue
-    blue: '#2973E7',        // Secondary Blue
-    cyan: '#5DBDF9',        // Tertiary Cyan
+    deepBlue: '#2A3575', // Primary Deep Blue
+    blue: '#2973E7', // Secondary Blue
+    cyan: '#5DBDF9', // Tertiary Cyan
   },
 
   // Neutral Colors
@@ -33,6 +33,7 @@ export const colors = {
     primary: '#FFFFFF',
     secondary: '#F9FAFB',
     tertiary: '#F3F4F6',
+    app: '#F8F9FF', // Main app background
   },
 
   // Text Colors

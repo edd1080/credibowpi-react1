@@ -15,7 +15,7 @@ jest.mock('../../stores/authStore', () => ({
 describe('LoginScreen', () => {
   it('renders correctly', () => {
     const { getByText, getByTestId } = render(<LoginScreen />);
-    
+
     expect(getByText('CrediBowpi')).toBeTruthy();
     expect(getByText('Ingresa tus credenciales para continuar')).toBeTruthy();
     expect(getByTestId('email-input')).toBeTruthy();
@@ -25,7 +25,7 @@ describe('LoginScreen', () => {
 
   it('shows validation errors for empty fields', async () => {
     const { getByTestId, getByText } = render(<LoginScreen />);
-    
+
     const loginButton = getByTestId('login-button');
     fireEvent.press(loginButton);
 
@@ -37,10 +37,10 @@ describe('LoginScreen', () => {
 
   it('shows validation error for invalid email', async () => {
     const { getByTestId, getByText } = render(<LoginScreen />);
-    
+
     const emailInput = getByTestId('email-input');
     const loginButton = getByTestId('login-button');
-    
+
     fireEvent.changeText(emailInput, 'invalid-email');
     fireEvent.press(loginButton);
 
@@ -51,10 +51,10 @@ describe('LoginScreen', () => {
 
   it('shows forgot password alert', () => {
     const { getByTestId } = render(<LoginScreen />);
-    
+
     const forgotPasswordButton = getByTestId('forgot-password-button');
     fireEvent.press(forgotPasswordButton);
-    
+
     // Alert should be shown (mocked in test setup)
   });
 });

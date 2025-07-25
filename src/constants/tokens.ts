@@ -46,9 +46,9 @@ export const tokens = {
   // Animation tokens
   animation: {
     duration: {
-      fast: 150,      // Tap feedback
-      normal: 250,    // Screen transitions
-      slow: 300,      // Complex animations
+      fast: 150, // Tap feedback
+      normal: 250, // Screen transitions
+      slow: 300, // Complex animations
     },
     easing: {
       easeInOut: 'ease-in-out',
@@ -60,8 +60,8 @@ export const tokens = {
   accessibility: {
     minTouchTarget: spacing.touchTarget, // 44x44pt minimum
     contrastRatio: {
-      aa: 4.5,      // WCAG AA compliance
-      aaa: 7,       // WCAG AAA compliance
+      aa: 4.5, // WCAG AA compliance
+      aaa: 7, // WCAG AAA compliance
     },
   },
 } as const;

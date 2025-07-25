@@ -5,6 +5,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 ## Components Implemented
 
 ### 1. Database Service (`src/services/database.ts`)
+
 - **Encrypted SQLite Database**: Uses expo-sqlite with encryption for sensitive data
 - **Schema**: Applications, documents, and sync_queue tables as per design requirements
 - **CRUD Operations**: Complete application lifecycle management
@@ -12,6 +13,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - **Data Encryption**: Automatic encryption/decryption of application data
 
 **Key Features:**
+
 - Automatic table creation with proper indexes
 - Encrypted data storage using SecureStore-managed keys
 - Comprehensive CRUD operations for applications and documents
@@ -19,6 +21,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - Utility methods for counts and status queries
 
 ### 2. Secure Storage Service (`src/services/secureStorage.ts`)
+
 - **JWT Token Management**: Secure storage and retrieval of authentication tokens
 - **User Data Storage**: Encrypted user profile information
 - **Encryption Key Management**: Automatic generation and storage of encryption keys
@@ -26,6 +29,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - **Device ID Management**: Unique device identification
 
 **Key Features:**
+
 - Automatic token expiration handling
 - Secure user data persistence
 - Encryption key generation and management
@@ -33,6 +37,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - Secure logout with data clearing
 
 ### 3. File System Service (`src/services/fileSystem.ts`)
+
 - **Document Storage**: Local file system management for documents and images
 - **File Validation**: Image quality and format validation
 - **Storage Management**: Directory organization and cleanup
@@ -40,6 +45,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - **Temp File Management**: Automatic cleanup of temporary files
 
 **Key Features:**
+
 - Organized directory structure per application
 - File quality validation and metadata extraction
 - Storage space monitoring and management
@@ -47,6 +53,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - Document integrity verification with checksums
 
 ### 4. Zustand Store with Persistence (`src/stores/appStore.ts`)
+
 - **Offline-First State**: Complete application state management
 - **Persistent Storage**: AsyncStorage integration for state persistence
 - **Network Status**: Online/offline state tracking
@@ -54,6 +61,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 - **Notifications**: In-app notification system
 
 **Key Features:**
+
 - Comprehensive application state management
 - Automatic state persistence with selective storage
 - Network status and sync state tracking
@@ -61,18 +69,21 @@ This document summarizes the offline-first data infrastructure implemented for C
 - User preferences management
 
 ### 5. Initialization Service (`src/services/initialization.ts`)
+
 - **Service Orchestration**: Coordinates initialization of all services
 - **Health Checks**: Monitors service availability and status
 - **Error Handling**: Comprehensive error reporting and recovery
 - **Reset Functionality**: Complete infrastructure reset capability
 
 **Key Features:**
+
 - Coordinated service initialization
 - Health monitoring and diagnostics
 - Comprehensive error handling and reporting
 - Infrastructure reset and cleanup
 
 ### 6. Type Definitions (`src/types/database.ts`)
+
 - **Complete Type System**: All data structures and interfaces
 - **Application Models**: Credit application data structures
 - **Document Models**: File and document metadata types
@@ -82,6 +93,7 @@ This document summarizes the offline-first data infrastructure implemented for C
 ## Database Schema
 
 ### Applications Table
+
 ```sql
 CREATE TABLE applications (
   id TEXT PRIMARY KEY,
@@ -96,6 +108,7 @@ CREATE TABLE applications (
 ```
 
 ### Documents Table
+
 ```sql
 CREATE TABLE documents (
   id TEXT PRIMARY KEY,
@@ -111,6 +124,7 @@ CREATE TABLE documents (
 ```
 
 ### Sync Queue Table
+
 ```sql
 CREATE TABLE sync_queue (
   id TEXT PRIMARY KEY,
@@ -143,13 +157,17 @@ CREATE TABLE sync_queue (
 ## Usage Example
 
 ```typescript
-import { initializationService, databaseService, secureStorageService } from './src/services';
+import {
+  initializationService,
+  databaseService,
+  secureStorageService,
+} from './src/services';
 
 // Initialize the infrastructure
 const result = await initializationService.initialize();
 if (result.success) {
   console.log('Infrastructure ready!');
-  
+
   // Use the services
   const application = await databaseService.createApplication(appData);
   await secureStorageService.storeAuthTokens(tokens);

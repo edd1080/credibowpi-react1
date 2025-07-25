@@ -7,6 +7,7 @@ export * from './fileSystem';
 export * from './initialization';
 export * from './metricsService';
 export * from './syncService';
+export * from './toastService';
 
 // TODO: Implement additional services
 // export * from './api';

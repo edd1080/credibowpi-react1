@@ -7,7 +7,7 @@ describe('Offline Infrastructure Integration', () => {
   it('should export all required services', () => {
     // Test that all services are properly exported
     const services = require('../index');
-    
+
     expect(services.databaseService).toBeDefined();
     expect(services.secureStorageService).toBeDefined();
     expect(services.fileSystemService).toBeDefined();
@@ -44,10 +44,10 @@ describe('Offline Infrastructure Integration', () => {
 
   it('should have proper type definitions', () => {
     const types = require('../../types/database');
-    
+
     // Check that types are properly exported
     expect(types).toBeDefined();
-    
+
     // These should not throw when imported
     expect(() => {
       const { ApplicationStatus, SyncStatus, DocumentType } = types;
@@ -57,10 +57,10 @@ describe('Offline Infrastructure Integration', () => {
 
   it('should generate unique IDs', () => {
     const { databaseService } = require('../database');
-    
+
     const id1 = databaseService.generateId();
     const id2 = databaseService.generateId();
-    
+
     expect(id1).toBeDefined();
     expect(id2).toBeDefined();
     expect(id1).not.toBe(id2);
@@ -70,10 +70,10 @@ describe('Offline Infrastructure Integration', () => {
 
   it('should have proper store structure', () => {
     const { useAppStore } = require('../../stores/appStore');
-    
+
     expect(useAppStore).toBeDefined();
     expect(typeof useAppStore).toBe('function');
-    
+
     // Test that store has expected methods
     const store = useAppStore.getState();
     expect(typeof store.setUser).toBe('function');

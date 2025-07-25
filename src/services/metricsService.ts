@@ -5,7 +5,7 @@ export interface DashboardMetrics {
     newApplications: number;
     inProgress: number;
     completed: number;
-    submitted: number;
+    rejected: number;
   };
   sync: {
     pendingCount: number;
@@ -29,7 +29,13 @@ export interface MetricCard {
     percentage: number;
   };
   color: 'primary' | 'success' | 'warning' | 'error';
-  iconName?: 'new_applications' | 'in_progress' | 'completed' | 'sync_pending' | 'analytics' | 'trending_up';
+  iconName?:
+    | 'new_applications'
+    | 'in_progress'
+    | 'completed'
+    | 'rejected'
+    | 'analytics'
+    | 'trending_up';
 }
 
 export class MetricsService {
@@ -38,56 +44,65 @@ export class MetricsService {
    */
   static calculateMetrics(applications: CreditApplication[]): DashboardMetrics {
     const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
     const weekStart = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     // Filter applications for today
-    const todayApplications = applications.filter(app => 
-      new Date(app.createdAt) >= todayStart
+    const todayApplications = applications.filter(
+      app => new Date(app.createdAt) >= todayStart
     );
 
     // Filter applications for this week
-    const weekApplications = applications.filter(app => 
-      new Date(app.createdAt) >= weekStart
+    const weekApplications = applications.filter(
+      app => new Date(app.createdAt) >= weekStart
     );
 
     // Calculate today's metrics
     const todayMetrics = {
-      newApplications: todayApplications.filter(app => 
-        app.status === 'draft' || app.status === 'kyc_pending'
+      newApplications: todayApplications.filter(
+        app => app.status === 'draft' || app.status === 'kyc_pending'
       ).length,
-      inProgress: todayApplications.filter(app => 
-        app.status === 'form_in_progress'
+      inProgress: todayApplications.filter(
+        app => app.status === 'form_in_progress'
       ).length,
-      completed: todayApplications.filter(app => 
-        app.status === 'ready_for_review'
+      completed: todayApplications.filter(
+        app =>
+          app.status === 'ready_for_review' ||
+          app.status === 'submitted' ||
+          app.status === 'approved'
       ).length,
-      submitted: todayApplications.filter(app => 
-        app.status === 'submitted' || app.status === 'approved'
-      ).length,
+      rejected: todayApplications.filter(app => app.status === 'rejected')
+        .length,
     };
 
     // Calculate sync metrics
     const syncMetrics = {
-      pendingCount: applications.filter(app => 
-        app.syncStatus === 'sync_pending' || app.syncStatus === 'local_only'
+      pendingCount: applications.filter(
+        app =>
+          app.syncStatus === 'sync_pending' || app.syncStatus === 'local_only'
       ).length,
-      failedCount: applications.filter(app => 
-        app.syncStatus === 'sync_failed'
-      ).length,
+      failedCount: applications.filter(app => app.syncStatus === 'sync_failed')
+        .length,
       lastSyncTime: this.getLastSyncTime(applications),
     };
 
     // Calculate weekly metrics
-    const completedWeekApplications = weekApplications.filter(app => 
-      app.status === 'submitted' || app.status === 'approved'
+    const completedWeekApplications = weekApplications.filter(
+      app => app.status === 'submitted' || app.status === 'approved'
     );
-    
-    const completionRate = weekApplications.length > 0 
-      ? (completedWeekApplications.length / weekApplications.length) * 100 
-      : 0;
 
-    const averageTimePerApplication = this.calculateAverageCompletionTime(completedWeekApplications);
+    const completionRate =
+      weekApplications.length > 0
+        ? (completedWeekApplications.length / weekApplications.length) * 100
+        : 0;
+
+    const averageTimePerApplication = this.calculateAverageCompletionTime(
+      completedWeekApplications
+    );
 
     return {
       today: todayMetrics,
@@ -106,38 +121,32 @@ export class MetricsService {
   static getMetricCards(metrics: DashboardMetrics): MetricCard[] {
     return [
       {
-        id: 'new-applications',
-        title: 'Nuevas Hoy',
-        value: metrics.today.newApplications,
-        subtitle: 'Solicitudes iniciadas',
+        id: 'total-applications',
+        title: 'Total Solicitudes',
+        value: metrics.today.newApplications + metrics.today.inProgress + metrics.today.completed + metrics.today.rejected,
         color: 'primary',
         iconName: 'new_applications',
       },
       {
         id: 'in-progress',
-        title: 'En Progreso',
+        title: 'En Proceso',
         value: metrics.today.inProgress,
-        subtitle: 'Formularios activos',
         color: 'warning',
         iconName: 'in_progress',
       },
       {
-        id: 'completed',
-        title: 'Completadas',
+        id: 'approved',
+        title: 'Aprobadas',
         value: metrics.today.completed,
-        subtitle: 'Listas para revisar',
         color: 'success',
         iconName: 'completed',
       },
       {
-        id: 'pending-sync',
-        title: 'Pendientes Sync',
-        value: metrics.sync.pendingCount,
-        subtitle: metrics.sync.failedCount > 0 
-          ? `${metrics.sync.failedCount} con error` 
-          : 'Para sincronizar',
-        color: metrics.sync.failedCount > 0 ? 'error' : 'primary',
-        iconName: 'sync_pending',
+        id: 'drafts',
+        title: 'Borradores',
+        value: metrics.today.rejected,
+        color: 'error',
+        iconName: 'rejected',
       },
     ];
   }
@@ -150,10 +159,11 @@ export class MetricsService {
     completionRate: string;
     syncStatus: 'good' | 'warning' | 'error';
   } {
-    const totalToday = metrics.today.newApplications + 
-                      metrics.today.inProgress + 
-                      metrics.today.completed + 
-                      metrics.today.submitted;
+    const totalToday =
+      metrics.today.newApplications +
+      metrics.today.inProgress +
+      metrics.today.completed +
+      metrics.today.rejected;
 
     const completionRate = `${Math.round(metrics.weekly.completionRate)}%`;
 
@@ -178,7 +188,7 @@ export class MetricsService {
     if (metrics.sync.failedCount > 0) {
       return `${metrics.sync.failedCount} errores de sync`;
     }
-    
+
     if (metrics.sync.pendingCount > 0) {
       return `${metrics.sync.pendingCount} pendientes`;
     }
@@ -197,23 +207,25 @@ export class MetricsService {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
-    
+
     if (diffMins < 1) return 'ahora';
     if (diffMins < 60) return `hace ${diffMins}m`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `hace ${diffHours}h`;
-    
+
     const diffDays = Math.floor(diffHours / 24);
     if (diffDays < 7) return `hace ${diffDays}d`;
-    
+
     return date.toLocaleDateString();
   }
 
   /**
    * Get the most recent sync time from applications
    */
-  private static getLastSyncTime(applications: CreditApplication[]): Date | null {
+  private static getLastSyncTime(
+    applications: CreditApplication[]
+  ): Date | null {
     const syncedApps = applications.filter(app => app.syncStatus === 'synced');
     if (syncedApps.length === 0) return null;
 
@@ -228,7 +240,9 @@ export class MetricsService {
   /**
    * Calculate average completion time for applications
    */
-  private static calculateAverageCompletionTime(applications: CreditApplication[]): number {
+  private static calculateAverageCompletionTime(
+    applications: CreditApplication[]
+  ): number {
     if (applications.length === 0) return 0;
 
     const completionTimes = applications.map(app => {
@@ -237,7 +251,10 @@ export class MetricsService {
       return (updated - created) / (1000 * 60); // Convert to minutes
     });
 
-    return completionTimes.reduce((sum, time) => sum + time, 0) / completionTimes.length;
+    return (
+      completionTimes.reduce((sum, time) => sum + time, 0) /
+      completionTimes.length
+    );
   }
 
   /**
@@ -248,8 +265,8 @@ export class MetricsService {
       today: {
         newApplications: 3,
         inProgress: 2,
-        completed: 1,
-        submitted: 4,
+        completed: 5,
+        rejected: 1,
       },
       sync: {
         pendingCount: 2,

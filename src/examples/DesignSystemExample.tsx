@@ -15,23 +15,23 @@ export const DesignSystemExample: React.FC = () => {
       <Typography variant="h1" color="primary">
         CrediBowpi Design System
       </Typography>
-      
+
       <Typography variant="h2" color="secondary">
         Typography Scale
       </Typography>
-      
+
       <Typography variant="bodyL">
         This is Body Large text using DM Sans font family.
       </Typography>
-      
+
       <Typography variant="bodyM" color="tertiary">
         This is Body Medium text with tertiary color.
       </Typography>
-      
+
       <Typography variant="label" weight="medium">
         Label Text - Medium Weight
       </Typography>
-      
+
       <Typography variant="caption" color="secondary">
         Caption text for additional information
       </Typography>
@@ -43,40 +43,40 @@ export const DesignSystemExample: React.FC = () => {
           variant="primary"
           onPress={handlePress}
         />
-        
+
         <Button
           title="Secondary Button"
           variant="secondary"
           onPress={handlePress}
         />
-        
+
         <Button
           title="Tertiary Button"
           variant="tertiary"
           onPress={handlePress}
         />
-        
+
         <Button
           title="Sync Button"
           variant="sync"
           size="small"
           onPress={handlePress}
         />
-        
+
         <Button
           title="Retry Button"
           variant="retry"
           size="large"
           onPress={handlePress}
         />
-        
+
         <Button
           title="Loading Button"
           variant="primary"
           loading
           onPress={handlePress}
         />
-        
+
         <Button
           title="Disabled Button"
           variant="primary"

@@ -1,15 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Typography } from '../components/atoms';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
-
-
 
 interface SplashScreenProps {
   onAnimationComplete: () => void;
@@ -62,7 +55,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
             CB
           </Typography>
         </View>
-        
+
         <Typography
           variant="h2"
           color="inverse"
@@ -71,12 +64,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         >
           CrediBowpi
         </Typography>
-        
-        <Typography
-          variant="bodyM"
-          color="inverse"
-          style={styles.tagline}
-        >
+
+        <Typography variant="bodyM" color="inverse" style={styles.tagline}>
           Crédito digital para el campo
         </Typography>
       </Animated.View>
@@ -91,12 +80,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   logoContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  
+
   logoPlaceholder: {
     width: 80,
     height: 80,
@@ -114,12 +103,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  
+
   brandName: {
     marginBottom: spacing.space8,
     textAlign: 'center',
   },
-  
+
   tagline: {
     textAlign: 'center',
     opacity: 0.9,

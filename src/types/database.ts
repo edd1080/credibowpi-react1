@@ -1,41 +1,28 @@
 // Database types and interfaces for offline-first data infrastructure
 
-export type ApplicationStatus = 
-  | 'draft' 
-  | 'kyc_pending' 
-  | 'form_in_progress' 
-  | 'ready_for_review' 
-  | 'submitted' 
-  | 'approved' 
+export type ApplicationStatus =
+  | 'draft'
+  | 'kyc_pending'
+  | 'form_in_progress'
+  | 'ready_for_review'
+  | 'submitted'
+  | 'approved'
   | 'rejected';
 
-export type SyncStatus = 
-  | 'local_only' 
-  | 'sync_pending' 
-  | 'sync_in_progress' 
-  | 'synced' 
+export type SyncStatus =
+  | 'local_only'
+  | 'sync_pending'
+  | 'sync_in_progress'
+  | 'synced'
   | 'sync_failed';
 
-export type DocumentType = 
-  | 'dpi_front' 
-  | 'dpi_back' 
-  | 'selfie' 
-  | 'attachment';
+export type DocumentType = 'dpi_front' | 'dpi_back' | 'selfie' | 'attachment';
 
-export type DocumentStatus = 
-  | 'captured' 
-  | 'validated' 
-  | 'uploaded' 
-  | 'failed';
+export type DocumentStatus = 'captured' | 'validated' | 'uploaded' | 'failed';
 
-export type SyncOperationType = 
-  | 'create' 
-  | 'update' 
-  | 'upload';
+export type SyncOperationType = 'create' | 'update' | 'upload';
 
-export type SyncEntityType = 
-  | 'application' 
-  | 'document';
+export type SyncEntityType = 'application' | 'document';
 
 // Database row interfaces
 export interface ApplicationRow {
@@ -116,7 +103,11 @@ export interface FinancialData {
 }
 
 export interface BusinessData {
-  employmentType: 'employed' | 'self_employed' | 'business_owner' | 'unemployed';
+  employmentType:
+    | 'employed'
+    | 'self_employed'
+    | 'business_owner'
+    | 'unemployed';
   companyName?: string;
   position?: string;
   workAddress?: string;
@@ -176,7 +167,7 @@ export interface CreditApplication {
   createdAt: Date;
   updatedAt: Date;
   syncStatus: SyncStatus;
-  
+
   // Application sections
   kyc: KYCData;
   identification: IdentificationData;

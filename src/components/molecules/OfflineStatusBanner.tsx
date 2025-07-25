@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Animated,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { Typography } from '../atoms';
 import { colors } from '../../constants/colors';
@@ -72,12 +67,9 @@ export const OfflineStatusBanner: React.FC<OfflineStatusBannerProps> = ({
             </Typography>
           )}
         </View>
-        
+
         {onSyncPress && pendingCount > 0 && (
-          <TouchableOpacity
-            style={styles.syncButton}
-            onPress={onSyncPress}
-          >
+          <TouchableOpacity style={styles.syncButton} onPress={onSyncPress}>
             <Typography variant="caption" color="inverse" weight="medium">
               Sincronizar
             </Typography>
@@ -105,7 +97,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
-  
+
   content: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -114,11 +106,11 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.space12,
     paddingTop: spacing.space12 + 44, // Add safe area top padding
   },
-  
+
   leftContent: {
     flex: 1,
   },
-  
+
   syncButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: spacing.space12,

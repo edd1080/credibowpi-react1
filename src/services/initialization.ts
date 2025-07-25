@@ -21,7 +21,9 @@ export class InitializationService {
     const warnings: string[] = [];
 
     try {
-      console.log('Starting CrediBowpi offline infrastructure initialization...');
+      console.log(
+        'Starting CrediBowpi offline infrastructure initialization...'
+      );
 
       // Initialize database service
       try {
@@ -78,12 +80,14 @@ export class InitializationService {
       try {
         const storageInfo = await fileSystemService.getStorageInfo();
         const freeSpaceGB = storageInfo.freeSpace / (1024 * 1024 * 1024);
-        
+
         if (freeSpaceGB < 1) {
           warnings.push('Low storage space detected (< 1GB free)');
         }
-        
-        console.log(`✓ Storage check complete: ${freeSpaceGB.toFixed(2)}GB free`);
+
+        console.log(
+          `✓ Storage check complete: ${freeSpaceGB.toFixed(2)}GB free`
+        );
       } catch (error) {
         const warningMsg = `Storage check warning: ${error.message}`;
         console.warn(warningMsg);
@@ -91,9 +95,11 @@ export class InitializationService {
       }
 
       this.initialized = errors.length === 0;
-      
+
       if (this.initialized) {
-        console.log('🎉 CrediBowpi offline infrastructure initialized successfully');
+        console.log(
+          '🎉 CrediBowpi offline infrastructure initialized successfully'
+        );
       } else {
         console.error('❌ CrediBowpi initialization completed with errors');
       }
@@ -107,7 +113,7 @@ export class InitializationService {
       const errorMsg = `Critical initialization error: ${error.message}`;
       console.error(errorMsg);
       errors.push(errorMsg);
-      
+
       return {
         success: false,
         errors,
@@ -153,8 +159,9 @@ export class InitializationService {
       console.error('Secure storage health check failed:', error);
     }
 
-    health.overall = health.database && health.fileSystem && health.secureStorage;
-    
+    health.overall =
+      health.database && health.fileSystem && health.secureStorage;
+
     return health;
   }
 

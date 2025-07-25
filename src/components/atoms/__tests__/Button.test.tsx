@@ -14,7 +14,7 @@ describe('Button Component', () => {
       disabled: false,
       loading: false,
     };
-    
+
     expect(defaultProps.variant).toBe('primary');
     expect(defaultProps.size).toBe('medium');
     expect(defaultProps.disabled).toBe(false);
@@ -26,14 +26,20 @@ describe('Button Component', () => {
       title: 'Test Button',
       onPress: mockOnPress,
     };
-    
+
     expect(props.title).toBe('Test Button');
     expect(typeof props.onPress).toBe('function');
   });
 
   it('should support all button variants', () => {
-    const variants = ['primary', 'secondary', 'tertiary', 'sync', 'retry'] as const;
-    
+    const variants = [
+      'primary',
+      'secondary',
+      'tertiary',
+      'sync',
+      'retry',
+    ] as const;
+
     variants.forEach(variant => {
       const props: ButtonProps = {
         title: `${variant} Button`,
@@ -46,7 +52,7 @@ describe('Button Component', () => {
 
   it('should support all button sizes', () => {
     const sizes = ['small', 'medium', 'large'] as const;
-    
+
     sizes.forEach(size => {
       const props: ButtonProps = {
         title: `${size} Button`,
@@ -63,13 +69,13 @@ describe('Button Component', () => {
       loading: true,
       onPress: mockOnPress,
     };
-    
+
     const disabledProps: ButtonProps = {
       title: 'Disabled Button',
       disabled: true,
       onPress: mockOnPress,
     };
-    
+
     expect(loadingProps.loading).toBe(true);
     expect(disabledProps.disabled).toBe(true);
   });

@@ -32,7 +32,7 @@ export class FileSystemService {
       // Create necessary directories
       await this.ensureDirectoryExists(DOCUMENTS_DIR);
       await this.ensureDirectoryExists(TEMP_DIR);
-      
+
       this.initialized = true;
       console.log('FileSystem service initialized successfully');
     } catch (error) {
@@ -60,7 +60,8 @@ export class FileSystemService {
     try {
       // Generate unique filename if not provided
       const fileExtension = this.getFileExtension(sourceUri);
-      const finalFileName = fileName || `${documentType}_${Date.now()}.${fileExtension}`;
+      const finalFileName =
+        fileName || `${documentType}_${Date.now()}.${fileExtension}`;
       const destinationPath = `${DOCUMENTS_DIR}${applicationId}/${finalFileName}`;
 
       // Ensure application directory exists
@@ -74,7 +75,9 @@ export class FileSystemService {
 
       // Validate file size
       if (sourceInfo.size && sourceInfo.size > MAX_FILE_SIZE) {
-        throw new Error(`File size exceeds maximum allowed size of ${MAX_FILE_SIZE / (1024 * 1024)}MB`);
+        throw new Error(
+          `File size exceeds maximum allowed size of ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+        );
       }
 
       // Copy file to documents directory
@@ -171,7 +174,7 @@ export class FileSystemService {
         for (const file of files) {
           const filePath = `${TEMP_DIR}${file}`;
           const fileInfo = await FileSystem.getInfoAsync(filePath);
-          
+
           if (fileInfo.exists && fileInfo.modificationTime) {
             const fileAge = now - fileInfo.modificationTime;
             if (fileAge > maxAge) {
@@ -190,7 +193,7 @@ export class FileSystemService {
     try {
       const appDir = `${DOCUMENTS_DIR}${applicationId}/`;
       const dirInfo = await FileSystem.getInfoAsync(appDir);
-      
+
       if (!dirInfo.exists) return [];
 
       const files = await FileSystem.readDirectoryAsync(appDir);
@@ -215,13 +218,15 @@ export class FileSystemService {
     try {
       const appDir = `${DOCUMENTS_DIR}${applicationId}/`;
       const dirInfo = await FileSystem.getInfoAsync(appDir);
-      
+
       if (dirInfo.exists) {
         await FileSystem.deleteAsync(appDir);
       }
     } catch (error) {
       console.error('Failed to delete application documents:', error);
-      throw new Error(`Failed to delete application documents: ${error.message}`);
+      throw new Error(
+        `Failed to delete application documents: ${error.message}`
+      );
     }
   }
 
@@ -233,8 +238,8 @@ export class FileSystemService {
     documentsSize: number;
   }> {
     try {
-      const totalSpace = await FileSystem.getTotalDiskCapacityAsync() || 0;
-      const freeSpace = await FileSystem.getFreeDiskStorageAsync() || 0;
+      const totalSpace = (await FileSystem.getTotalDiskCapacityAsync()) || 0;
+      const freeSpace = (await FileSystem.getFreeDiskStorageAsync()) || 0;
       const usedSpace = totalSpace - freeSpace;
       const documentsSize = await this.getDirectorySize(DOCUMENTS_DIR);
 
@@ -266,7 +271,7 @@ export class FileSystemService {
       for (const file of files) {
         const filePath = `${dirPath}${file}`;
         const fileInfo = await FileSystem.getInfoAsync(filePath);
-        
+
         if (fileInfo.isDirectory) {
           totalSize += await this.getDirectorySize(`${filePath}/`);
         } else {
@@ -296,7 +301,9 @@ export class FileSystemService {
     return SUPPORTED_IMAGE_FORMATS.includes(extension.toLowerCase());
   }
 
-  private async getImageDimensions(imagePath: string): Promise<ImageDimensions> {
+  private async getImageDimensions(
+    imagePath: string
+  ): Promise<ImageDimensions> {
     try {
       // This would require expo-image-manipulator or similar
       // For now, return default dimensions
@@ -307,13 +314,16 @@ export class FileSystemService {
     }
   }
 
-  private calculateImageQuality(dimensions: ImageDimensions, fileSize: number): number {
+  private calculateImageQuality(
+    dimensions: ImageDimensions,
+    fileSize: number
+  ): number {
     // Simple quality calculation based on resolution and file size
     const pixelCount = dimensions.width * dimensions.height;
     const bytesPerPixel = fileSize / pixelCount;
-    
+
     // Normalize to 0-100 scale (higher is better)
-    const quality = Math.min(100, Math.max(0, (bytesPerPixel * 10) * 100));
+    const quality = Math.min(100, Math.max(0, bytesPerPixel * 10 * 100));
     return Math.round(quality);
   }
 
@@ -323,7 +333,7 @@ export class FileSystemService {
       const fileContent = await FileSystem.readAsStringAsync(filePath, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      
+
       return await Crypto.digestStringAsync(
         Crypto.CryptoDigestAlgorithm.SHA256,
         fileContent

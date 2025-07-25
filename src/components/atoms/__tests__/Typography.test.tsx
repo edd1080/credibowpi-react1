@@ -7,7 +7,7 @@ describe('Typography Component', () => {
       color: 'primary',
       weight: 'regular',
     };
-    
+
     expect(defaultProps.variant).toBe('bodyM');
     expect(defaultProps.color).toBe('primary');
     expect(defaultProps.weight).toBe('regular');
@@ -17,13 +17,22 @@ describe('Typography Component', () => {
     const props: TypographyProps = {
       children: 'Test Text',
     };
-    
+
     expect(props.children).toBe('Test Text');
   });
 
   it('should support all typography variants', () => {
-    const variants = ['h1', 'h2', 'h3', 'bodyL', 'bodyM', 'bodyS', 'label', 'caption'] as const;
-    
+    const variants = [
+      'h1',
+      'h2',
+      'h3',
+      'bodyL',
+      'bodyM',
+      'bodyS',
+      'label',
+      'caption',
+    ] as const;
+
     variants.forEach(variant => {
       const props: TypographyProps = {
         children: `${variant} Text`,
@@ -34,8 +43,16 @@ describe('Typography Component', () => {
   });
 
   it('should support all color variants', () => {
-    const colors = ['primary', 'secondary', 'tertiary', 'inverse', 'success', 'warning', 'error'] as const;
-    
+    const colors = [
+      'primary',
+      'secondary',
+      'tertiary',
+      'inverse',
+      'success',
+      'warning',
+      'error',
+    ] as const;
+
     colors.forEach(color => {
       const props: TypographyProps = {
         children: `${color} Text`,
@@ -47,7 +64,7 @@ describe('Typography Component', () => {
 
   it('should support all weight variants', () => {
     const weights = ['regular', 'medium', 'bold'] as const;
-    
+
     weights.forEach(weight => {
       const props: TypographyProps = {
         children: `${weight} Text`,
@@ -62,7 +79,7 @@ describe('Typography Component', () => {
       children: 'Long text that should be truncated',
       numberOfLines: 2,
     };
-    
+
     expect(props.numberOfLines).toBe(2);
   });
 });

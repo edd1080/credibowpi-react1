@@ -22,113 +22,120 @@ export interface TextInputProps extends Omit<RNTextInputProps, 'style'> {
   inputStyle?: any;
 }
 
-export const TextInput: React.FC<TextInputProps> = React.memo(({
-  label,
-  error,
-  helperText,
-  leftIcon,
-  rightIcon,
-  onRightIconPress,
-  containerStyle,
-  inputStyle,
-  ...props
-}) => {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const hasError = !!error;
-
-  // Memoize callbacks to prevent unnecessary re-renders
-  const handleFocus = useCallback((e: any) => {
-    setIsFocused(true);
-    props.onFocus?.(e);
-  }, [props.onFocus]);
-
-  const handleBlur = useCallback((e: any) => {
-    setIsFocused(false);
-    props.onBlur?.(e);
-  }, [props.onBlur]);
-
-  const handleRightIconPress = useCallback(() => {
-    onRightIconPress?.();
-  }, [onRightIconPress]);
-
-  // Memoize styles to prevent recalculation
-  const labelStyle = useMemo(() => [
-    styles.label,
-    hasError && styles.labelError,
-    isFocused && styles.labelFocused,
-  ], [hasError, isFocused]);
-
-  const inputContainerStyle = useMemo(() => [
-    styles.inputContainer,
-    isFocused && styles.inputContainerFocused,
-    hasError && styles.inputContainerError,
-  ], [isFocused, hasError]);
-
-  const inputTextStyle = useMemo(() => [
-    styles.input,
-    leftIcon && styles.inputWithLeftIcon,
-    rightIcon && styles.inputWithRightIcon,
+export const TextInput: React.FC<TextInputProps> = React.memo(
+  ({
+    label,
+    error,
+    helperText,
+    leftIcon,
+    rightIcon,
+    onRightIconPress,
+    containerStyle,
     inputStyle,
-  ], [leftIcon, rightIcon, inputStyle]);
+    ...props
+  }) => {
+    const [isFocused, setIsFocused] = useState(false);
 
-  const helperTextStyle = useMemo(() => [
-    styles.helperText,
-    hasError && styles.errorText,
-  ], [hasError]);
+    const hasError = !!error;
 
-  return (
-    <View style={[styles.container, containerStyle]}>
-      {label && (
-        <Text style={labelStyle}>
-          {label}
-        </Text>
-      )}
-      
-      <View style={inputContainerStyle}>
-        {leftIcon && (
-          <View style={styles.leftIconContainer}>
-            {leftIcon}
-          </View>
-        )}
-        
-        <RNTextInput
-          style={inputTextStyle}
-          placeholderTextColor={colors.text.tertiary}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          autoCorrect={false}
-          autoCapitalize="none"
-          spellCheck={false}
-          {...props}
-        />
-        
-        {rightIcon && (
-          <TouchableOpacity
-            style={styles.rightIconContainer}
-            onPress={handleRightIconPress}
-            disabled={!onRightIconPress}
-            activeOpacity={0.7}
-          >
-            {rightIcon}
-          </TouchableOpacity>
+    // Memoize callbacks to prevent unnecessary re-renders
+    const handleFocus = useCallback(
+      (e: any) => {
+        setIsFocused(true);
+        props.onFocus?.(e);
+      },
+      [props]
+    );
+
+    const handleBlur = useCallback(
+      (e: any) => {
+        setIsFocused(false);
+        props.onBlur?.(e);
+      },
+      [props]
+    );
+
+    const handleRightIconPress = useCallback(() => {
+      onRightIconPress?.();
+    }, [onRightIconPress]);
+
+    // Pre-calculate styles to avoid recalculation on each render
+    const labelStyle = useMemo(
+      () => [
+        styles.label,
+        hasError && styles.labelError,
+        isFocused && styles.labelFocused,
+      ],
+      [hasError, isFocused]
+    );
+
+    const inputContainerStyle = useMemo(
+      () => [
+        styles.inputContainer,
+        hasError && styles.inputContainerError,
+        isFocused && !hasError && styles.inputContainerFocused,
+      ],
+      [isFocused, hasError]
+    );
+
+    const inputTextStyle = useMemo(
+      () => [
+        styles.input,
+        leftIcon && styles.inputWithLeftIcon,
+        rightIcon && styles.inputWithRightIcon,
+        inputStyle,
+      ],
+      [leftIcon, rightIcon, inputStyle]
+    );
+
+    const helperTextStyle = useMemo(
+      () => [styles.helperText, hasError && styles.errorText],
+      [hasError]
+    );
+
+    return (
+      <View style={[styles.container, containerStyle]}>
+        {label && <Text style={labelStyle}>{label}</Text>}
+
+        <View style={inputContainerStyle}>
+          {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
+
+          <RNTextInput
+            style={inputTextStyle}
+            placeholderTextColor={colors.text.tertiary}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            autoCorrect={false}
+            autoCapitalize="none"
+            spellCheck={false}
+            {...props}
+          />
+
+          {rightIcon && (
+            <TouchableOpacity
+              style={styles.rightIconContainer}
+              onPress={handleRightIconPress}
+              disabled={!onRightIconPress}
+              activeOpacity={0.7}
+            >
+              {rightIcon}
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {(error || helperText) && (
+          <Text style={helperTextStyle}>{error || helperText}</Text>
         )}
       </View>
-      
-      {(error || helperText) && (
-        <Text style={helperTextStyle}>
-          {error || helperText}
-        </Text>
-      )}
-    </View>
-  );
-});
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: spacing.space16,
   },
-  
+
   label: {
     fontSize: typography.fontSize.label,
     lineHeight: typography.lineHeight.label,
@@ -137,15 +144,15 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     marginBottom: spacing.space8,
   },
-  
+
   labelFocused: {
     color: colors.primary.deepBlue,
   },
-  
+
   labelError: {
     color: colors.error,
   },
-  
+
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -155,17 +162,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.primary,
     minHeight: spacing.touchTarget,
   },
-  
+
   inputContainerFocused: {
     borderColor: colors.primary.deepBlue,
     borderWidth: 2,
   },
-  
+
   inputContainerError: {
     borderColor: colors.error,
     borderWidth: 2,
   },
-  
+
   input: {
     flex: 1,
     fontSize: typography.fontSize.bodyM,
@@ -175,27 +182,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.space16,
     paddingVertical: spacing.space12,
   },
-  
+
   inputWithLeftIcon: {
     paddingLeft: spacing.space8,
   },
-  
+
   inputWithRightIcon: {
     paddingRight: spacing.space8,
   },
-  
+
   leftIconContainer: {
     paddingLeft: spacing.space16,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   rightIconContainer: {
     paddingRight: spacing.space16,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   helperText: {
     fontSize: typography.fontSize.caption,
     lineHeight: typography.lineHeight.caption,
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.space4,
     marginLeft: spacing.space4,
   },
-  
+
   errorText: {
     color: colors.error,
   },

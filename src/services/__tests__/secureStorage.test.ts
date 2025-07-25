@@ -27,8 +27,10 @@ describe('SecureStorageService', () => {
     };
 
     it('should store auth tokens', async () => {
-      await expect(secureStorageService.storeAuthTokens(mockTokens)).resolves.not.toThrow();
-      
+      await expect(
+        secureStorageService.storeAuthTokens(mockTokens)
+      ).resolves.not.toThrow();
+
       expect(mockSecureStore.setItemAsync).toHaveBeenCalledWith(
         'credibowpi_access_token',
         mockTokens.accessToken
@@ -46,22 +48,28 @@ describe('SecureStorageService', () => {
         .mockResolvedValueOnce(mockTokens.expiresAt.toString());
 
       const tokens = await secureStorageService.getAuthTokens();
-      
+
       expect(tokens).toEqual(mockTokens);
     });
 
     it('should return null when tokens are missing', async () => {
       mockSecureStore.getItemAsync.mockResolvedValue(null);
-      
+
       const tokens = await secureStorageService.getAuthTokens();
       expect(tokens).toBeNull();
     });
 
     it('should clear auth tokens', async () => {
-      await expect(secureStorageService.clearAuthTokens()).resolves.not.toThrow();
-      
-      expect(mockSecureStore.deleteItemAsync).toHaveBeenCalledWith('credibowpi_access_token');
-      expect(mockSecureStore.deleteItemAsync).toHaveBeenCalledWith('credibowpi_refresh_token');
+      await expect(
+        secureStorageService.clearAuthTokens()
+      ).resolves.not.toThrow();
+
+      expect(mockSecureStore.deleteItemAsync).toHaveBeenCalledWith(
+        'credibowpi_access_token'
+      );
+      expect(mockSecureStore.deleteItemAsync).toHaveBeenCalledWith(
+        'credibowpi_refresh_token'
+      );
     });
 
     it('should validate token expiration', async () => {
@@ -90,8 +98,10 @@ describe('SecureStorageService', () => {
     };
 
     it('should store user data', async () => {
-      await expect(secureStorageService.storeUserData(mockUserData)).resolves.not.toThrow();
-      
+      await expect(
+        secureStorageService.storeUserData(mockUserData)
+      ).resolves.not.toThrow();
+
       expect(mockSecureStore.setItemAsync).toHaveBeenCalledWith(
         'credibowpi_user_data',
         JSON.stringify(mockUserData)
@@ -99,15 +109,17 @@ describe('SecureStorageService', () => {
     });
 
     it('should retrieve user data', async () => {
-      mockSecureStore.getItemAsync.mockResolvedValue(JSON.stringify(mockUserData));
-      
+      mockSecureStore.getItemAsync.mockResolvedValue(
+        JSON.stringify(mockUserData)
+      );
+
       const userData = await secureStorageService.getUserData();
       expect(userData).toEqual(mockUserData);
     });
 
     it('should return null when user data is missing', async () => {
       mockSecureStore.getItemAsync.mockResolvedValue(null);
-      
+
       const userData = await secureStorageService.getUserData();
       expect(userData).toBeNull();
     });
@@ -116,9 +128,9 @@ describe('SecureStorageService', () => {
   describe('encryption key management', () => {
     it('should create encryption key if not exists', async () => {
       mockSecureStore.getItemAsync.mockResolvedValue(null);
-      
+
       const key = await secureStorageService.getOrCreateEncryptionKey();
-      
+
       expect(typeof key).toBe('string');
       expect(key.length).toBeGreaterThan(0);
       expect(mockSecureStore.setItemAsync).toHaveBeenCalledWith(
@@ -130,9 +142,9 @@ describe('SecureStorageService', () => {
     it('should return existing encryption key', async () => {
       const existingKey = 'existing-encryption-key';
       mockSecureStore.getItemAsync.mockResolvedValue(existingKey);
-      
+
       const key = await secureStorageService.getOrCreateEncryptionKey();
-      
+
       expect(key).toBe(existingKey);
       expect(mockSecureStore.setItemAsync).not.toHaveBeenCalled();
     });
@@ -153,21 +165,20 @@ describe('SecureStorageService', () => {
         role: 'agent',
       };
 
-      mockSecureStore.getItemAsync
-        .mockImplementation((key: string) => {
-          switch (key) {
-            case 'credibowpi_access_token':
-              return Promise.resolve(validTokens.accessToken);
-            case 'credibowpi_refresh_token':
-              return Promise.resolve(validTokens.refreshToken);
-            case 'token_expires_at':
-              return Promise.resolve(validTokens.expiresAt.toString());
-            case 'credibowpi_user_data':
-              return Promise.resolve(JSON.stringify(userData));
-            default:
-              return Promise.resolve(null);
-          }
-        });
+      mockSecureStore.getItemAsync.mockImplementation((key: string) => {
+        switch (key) {
+          case 'credibowpi_access_token':
+            return Promise.resolve(validTokens.accessToken);
+          case 'credibowpi_refresh_token':
+            return Promise.resolve(validTokens.refreshToken);
+          case 'token_expires_at':
+            return Promise.resolve(validTokens.expiresAt.toString());
+          case 'credibowpi_user_data':
+            return Promise.resolve(JSON.stringify(userData));
+          default:
+            return Promise.resolve(null);
+        }
+      });
 
       const hasValidSession = await secureStorageService.hasValidSession();
       expect(hasValidSession).toBe(true);
@@ -175,7 +186,7 @@ describe('SecureStorageService', () => {
 
     it('should invalidate session with missing data', async () => {
       mockSecureStore.getItemAsync.mockResolvedValue(null);
-      
+
       const hasValidSession = await secureStorageService.hasValidSession();
       expect(hasValidSession).toBe(false);
     });

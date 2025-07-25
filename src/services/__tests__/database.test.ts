@@ -1,5 +1,9 @@
 import { databaseService } from '../database';
-import { CreditApplication, ApplicationStatus, SyncStatus } from '../../types/database';
+import {
+  CreditApplication,
+  ApplicationStatus,
+  SyncStatus,
+} from '../../types/database';
 
 // Mock expo-sqlite
 jest.mock('expo-sqlite', () => ({
@@ -21,7 +25,9 @@ jest.mock('expo-crypto', () => ({
 // Mock secure storage
 jest.mock('../secureStorage', () => ({
   secureStorageService: {
-    getOrCreateEncryptionKey: jest.fn().mockResolvedValue('test-encryption-key'),
+    getOrCreateEncryptionKey: jest
+      .fn()
+      .mockResolvedValue('test-encryption-key'),
   },
 }));
 
@@ -91,7 +97,9 @@ describe('DatabaseService', () => {
 
     it('should create application successfully', async () => {
       await databaseService.initialize();
-      await expect(databaseService.createApplication(mockApplication)).resolves.not.toThrow();
+      await expect(
+        databaseService.createApplication(mockApplication)
+      ).resolves.not.toThrow();
     });
 
     it('should handle application retrieval', async () => {
@@ -102,7 +110,8 @@ describe('DatabaseService', () => {
 
     it('should get applications by agent', async () => {
       await databaseService.initialize();
-      const applications = await databaseService.getApplicationsByAgent('agent-1');
+      const applications =
+        await databaseService.getApplicationsByAgent('agent-1');
       expect(Array.isArray(applications)).toBe(true);
     });
   });
@@ -110,7 +119,7 @@ describe('DatabaseService', () => {
   describe('sync queue operations', () => {
     it('should add items to sync queue', async () => {
       await databaseService.initialize();
-      
+
       const syncOperation = {
         id: 'sync-1',
         operationType: 'create' as const,
@@ -121,7 +130,9 @@ describe('DatabaseService', () => {
         createdAt: new Date(),
       };
 
-      await expect(databaseService.addToSyncQueue(syncOperation)).resolves.not.toThrow();
+      await expect(
+        databaseService.addToSyncQueue(syncOperation)
+      ).resolves.not.toThrow();
     });
 
     it('should get sync queue items', async () => {

@@ -27,7 +27,7 @@ export class DatabaseService {
     try {
       // Generate or retrieve encryption key
       this.encryptionKey = await this.getOrCreateEncryptionKey();
-      
+
       this.db = await SQLite.openDatabaseAsync(DB_NAME);
       await this.createTables();
       console.log('Database initialized successfully');
@@ -135,7 +135,9 @@ export class DatabaseService {
       Crypto.CryptoDigestAlgorithm.SHA256,
       data + this.encryptionKey
     );
-    return Buffer.from(data).toString('base64') + '.' + encrypted.substring(0, 16);
+    return (
+      Buffer.from(data).toString('base64') + '.' + encrypted.substring(0, 16)
+    );
   }
 
   private async decryptData(encryptedData: string): Promise<string> {
@@ -149,7 +151,7 @@ export class DatabaseService {
   async createApplication(application: CreditApplication): Promise<void> {
     const db = await this.getDatabase();
     const encryptedData = await this.encryptData(JSON.stringify(application));
-    
+
     await db.runAsync(
       `INSERT INTO applications (id, agent_id, status, sync_status, data, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -176,7 +178,7 @@ export class DatabaseService {
 
     const decryptedData = await this.decryptData(result.data);
     const applicationData = JSON.parse(decryptedData);
-    
+
     return {
       ...applicationData,
       createdAt: new Date(result.created_at),
@@ -188,7 +190,7 @@ export class DatabaseService {
   async updateApplication(application: CreditApplication): Promise<void> {
     const db = await this.getDatabase();
     const encryptedData = await this.encryptData(JSON.stringify(application));
-    
+
     await db.runAsync(
       `UPDATE applications 
        SET status = ?, sync_status = ?, data = ?, updated_at = ?
@@ -214,7 +216,7 @@ export class DatabaseService {
     for (const row of results) {
       const decryptedData = await this.decryptData(row.data);
       const applicationData = JSON.parse(decryptedData);
-      
+
       applications.push({
         ...applicationData,
         createdAt: new Date(row.created_at),
@@ -233,10 +235,13 @@ export class DatabaseService {
   }
 
   // Document CRUD operations
-  async createDocument(document: DocumentCapture, applicationId: string): Promise<void> {
+  async createDocument(
+    document: DocumentCapture,
+    applicationId: string
+  ): Promise<void> {
     const db = await this.getDatabase();
     const metadataJson = JSON.stringify(document.metadata);
-    
+
     await db.runAsync(
       `INSERT INTO documents (id, application_id, type, local_path, remote_path, status, metadata, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -253,7 +258,9 @@ export class DatabaseService {
     );
   }
 
-  async getDocumentsByApplication(applicationId: string): Promise<DocumentCapture[]> {
+  async getDocumentsByApplication(
+    applicationId: string
+  ): Promise<DocumentCapture[]> {
     const db = await this.getDatabase();
     const results = await db.getAllAsync<DocumentRow>(
       'SELECT * FROM documents WHERE application_id = ? ORDER BY created_at ASC',
@@ -270,7 +277,11 @@ export class DatabaseService {
     }));
   }
 
-  async updateDocumentStatus(documentId: string, status: DocumentStatus, remotePath?: string): Promise<void> {
+  async updateDocumentStatus(
+    documentId: string,
+    status: DocumentStatus,
+    remotePath?: string
+  ): Promise<void> {
     const db = await this.getDatabase();
     await db.runAsync(
       'UPDATE documents SET status = ?, remote_path = ? WHERE id = ?',
@@ -282,7 +293,7 @@ export class DatabaseService {
   async addToSyncQueue(operation: SyncOperation): Promise<void> {
     const db = await this.getDatabase();
     const payloadJson = JSON.stringify(operation.payload);
-    
+
     await db.runAsync(
       `INSERT INTO sync_queue (id, operation_type, entity_type, entity_id, payload, retry_count, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -352,7 +363,10 @@ export class DatabaseService {
     return result?.count || 0;
   }
 
-  async getApplicationsByStatus(agentId: string, status: ApplicationStatus): Promise<CreditApplication[]> {
+  async getApplicationsByStatus(
+    agentId: string,
+    status: ApplicationStatus
+  ): Promise<CreditApplication[]> {
     const db = await this.getDatabase();
     const results = await db.getAllAsync<ApplicationRow>(
       'SELECT * FROM applications WHERE agent_id = ? AND status = ? ORDER BY updated_at DESC',
@@ -363,7 +377,7 @@ export class DatabaseService {
     for (const row of results) {
       const decryptedData = await this.decryptData(row.data);
       const applicationData = JSON.parse(decryptedData);
-      
+
       applications.push({
         ...applicationData,
         createdAt: new Date(row.created_at),
@@ -385,7 +399,7 @@ export class DatabaseService {
     for (const row of results) {
       const decryptedData = await this.decryptData(row.data);
       const applicationData = JSON.parse(decryptedData);
-      
+
       applications.push({
         ...applicationData,
         createdAt: new Date(row.created_at),
@@ -397,7 +411,10 @@ export class DatabaseService {
     return applications;
   }
 
-  async updateApplicationSyncStatus(applicationId: string, syncStatus: SyncStatus): Promise<void> {
+  async updateApplicationSyncStatus(
+    applicationId: string,
+    syncStatus: SyncStatus
+  ): Promise<void> {
     const db = await this.getDatabase();
     await db.runAsync(
       'UPDATE applications SET sync_status = ?, updated_at = ? WHERE id = ?',

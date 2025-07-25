@@ -14,47 +14,48 @@ const iconMap: Record<string, string> = {
   dashboard: '📊',
   analytics: '📈',
   trending_up: '📈',
-  
+
   // Applications & Forms
   description: '📄',
   assignment: '📋',
   edit: '✏️',
-  
+
   // Sync & Status
   sync: '🔄',
   sync_problem: '⚠️',
   check_circle: '✅',
   error: '❌',
   warning: '⚠️',
-  
+  cancel: '❌',
+
   // Navigation
   home: '🏠',
   person: '👤',
   settings: '⚙️',
-  
+
   // Actions
   add: '➕',
   refresh: '🔄',
   search: '🔍',
-  
+
   // Status indicators
   wifi_off: '📶',
   cloud_done: '☁️',
   cloud_upload: '☁️',
-  
+
   // Authentication
   visibility: '👁️',
   visibility_off: '🙈',
   fingerprint: '👆',
-  
+
   // Time & Progress
   schedule: '⏰',
   hourglass_empty: '⏳',
-  
+
   // Documents
   folder: '📁',
   attach_file: '📎',
-  
+
   // Communication
   notifications: '🔔',
   mail: '📧',
@@ -66,12 +67,8 @@ export const SimpleIcon: React.FC<SimpleIconProps> = ({
   color = colors.text.primary,
 }) => {
   const emoji = iconMap[name] || '❓';
-  
-  return (
-    <Text style={[styles.icon, { fontSize: size, color }]}>
-      {emoji}
-    </Text>
-  );
+
+  return <Text style={[styles.icon, { fontSize: size, color }]}>{emoji}</Text>;
 };
 
 // Simple Icons object for easy use
@@ -86,7 +83,7 @@ export const SimpleIcons = {
   trending_up: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="trending_up" {...props} />
   ),
-  
+
   // Applications & Forms
   description: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="description" {...props} />
@@ -97,7 +94,7 @@ export const SimpleIcons = {
   edit: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="edit" {...props} />
   ),
-  
+
   // Sync & Status
   sync: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="sync" {...props} />
@@ -114,7 +111,10 @@ export const SimpleIcons = {
   warning: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="warning" {...props} />
   ),
-  
+  cancel: (props?: Partial<SimpleIconProps>) => (
+    <SimpleIcon name="cancel" {...props} />
+  ),
+
   // Navigation
   home: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="home" {...props} />
@@ -125,7 +125,7 @@ export const SimpleIcons = {
   settings: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="settings" {...props} />
   ),
-  
+
   // Actions
   add: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="add" {...props} />
@@ -136,7 +136,7 @@ export const SimpleIcons = {
   search: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="search" {...props} />
   ),
-  
+
   // Status indicators
   wifi_off: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="wifi_off" {...props} />
@@ -147,7 +147,7 @@ export const SimpleIcons = {
   cloud_upload: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="cloud_upload" {...props} />
   ),
-  
+
   // Authentication
   visibility: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="visibility" {...props} />
@@ -158,7 +158,7 @@ export const SimpleIcons = {
   fingerprint: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="fingerprint" {...props} />
   ),
-  
+
   // Time & Progress
   schedule: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="schedule" {...props} />
@@ -166,7 +166,7 @@ export const SimpleIcons = {
   hourglass_empty: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="hourglass_empty" {...props} />
   ),
-  
+
   // Documents
   folder: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="folder" {...props} />
@@ -174,7 +174,7 @@ export const SimpleIcons = {
   attach_file: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="attach_file" {...props} />
   ),
-  
+
   // Communication
   notifications: (props?: Partial<SimpleIconProps>) => (
     <SimpleIcon name="notifications" {...props} />

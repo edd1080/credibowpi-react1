@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Typography } from '../atoms';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
@@ -30,12 +26,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
     const firstItem = items[0];
     const lastItems = items.slice(-(maxItems - 2));
-    
-    return [
-      firstItem,
-      { label: '...', onPress: undefined },
-      ...lastItems,
-    ];
+
+    return [firstItem, { label: '...', onPress: undefined }, ...lastItems];
   }, [items, maxItems]);
 
   return (
@@ -43,13 +35,20 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       {displayItems.map((item, index) => (
         <React.Fragment key={index}>
           {index > 0 && (
-            <Typography variant="bodyS" color="tertiary" style={styles.separator}>
+            <Typography
+              variant="bodyS"
+              color="tertiary"
+              style={styles.separator}
+            >
               /
             </Typography>
           )}
-          
+
           {item.onPress ? (
-            <TouchableOpacity onPress={item.onPress} style={styles.itemTouchable}>
+            <TouchableOpacity
+              onPress={item.onPress}
+              style={styles.itemTouchable}
+            >
               <Typography
                 variant="bodyS"
                 color="primary"
@@ -84,19 +83,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.neutral.gray200,
   },
-  
+
   separator: {
     marginHorizontal: spacing.space8,
   },
-  
+
   item: {
     maxWidth: 120,
   },
-  
+
   itemTouchable: {
     maxWidth: 120,
   },
-  
+
   clickableItem: {
     textDecorationLine: 'underline',
   },

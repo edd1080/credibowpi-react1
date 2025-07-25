@@ -10,24 +10,28 @@ A React Native mobile application for CrediBowpi field agents to manage credit a
 ## 🚀 Features
 
 ### 📊 Agent Dashboard
+
 - **Real-time Metrics**: Today's applications, completion rates, sync status
-- **KPI Visualization**: Weekly summaries and performance indicators  
+- **KPI Visualization**: Weekly summaries and performance indicators
 - **Sync Management**: Manual sync trigger with status indicators
 - **Quick Actions**: Nueva Solicitud CTA and navigation shortcuts
 
 ### 🔐 Security & Authentication
+
 - **Secure Login**: Biometric and PIN-based authentication
 - **Token Management**: JWT-based session handling
 - **Data Encryption**: SecureStore for sensitive information
 - **Offline Security**: Encrypted local database
 
 ### 📱 Offline-First Architecture
+
 - **SQLite Database**: Local data persistence
 - **Automatic Sync**: Background synchronization when online
 - **Conflict Resolution**: Smart merge strategies
 - **Queue Management**: Pending operations tracking
 
 ### 🎨 Design System
+
 - **CrediBowpi Branding**: Deep Blue (#2A3575), Secondary Blue (#2973E7), Cyan (#5DBDF9)
 - **8pt Grid System**: Consistent spacing and layout
 - **Typography Hierarchy**: Accessible text scaling
@@ -35,21 +39,22 @@ A React Native mobile application for CrediBowpi field agents to manage credit a
 
 ## 🛠 Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | React Native with Expo SDK 53 |
-| **Language** | TypeScript with strict mode |
-| **State Management** | Zustand with persistence |
-| **Database** | SQLite (expo-sqlite) |
-| **Security** | Expo SecureStore + Crypto |
-| **Navigation** | React Navigation v6 |
-| **Testing** | Jest + React Native Testing Library |
-| **Code Quality** | ESLint + Prettier |
+| Category             | Technology                          |
+| -------------------- | ----------------------------------- |
+| **Framework**        | React Native with Expo SDK 53       |
+| **Language**         | TypeScript with strict mode         |
+| **State Management** | Zustand with persistence            |
+| **Database**         | SQLite (expo-sqlite)                |
+| **Security**         | Expo SecureStore + Crypto           |
+| **Navigation**       | React Navigation v6                 |
+| **Testing**          | Jest + React Native Testing Library |
+| **Code Quality**     | ESLint + Prettier                   |
 
 ## 🏃‍♂️ Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Expo CLI (`npm install -g @expo/cli`)
 - iOS Simulator or Android Emulator
@@ -112,18 +117,21 @@ credibowpi-mobile/
 ## 🎯 Key Implementations
 
 ### Dashboard Metrics (Task 6 ✅)
+
 - **MetricCard Component**: Displays KPIs with brand styling
 - **Real-time Calculations**: Today's applications, sync status, weekly summaries
 - **Interactive Elements**: Tap to sync, pull-to-refresh
 - **Status Indicators**: Online/offline, sync progress, error states
 
 ### Authentication System
+
 - **Mock Login**: Test credentials for development
 - **Secure Storage**: Encrypted token persistence
 - **Session Management**: Automatic token refresh
 - **Biometric Support**: Ready for production integration
 
 ### Offline Infrastructure
+
 - **SQLite Schema**: Applications, documents, sync queue tables
 - **Encryption**: AES-256 for sensitive data
 - **Sync Queue**: Pending operations management
@@ -131,7 +139,8 @@ credibowpi-mobile/
 
 ## 🧪 Development
 
-### Running Tests 
+### Running Tests
+
 ```bash
 npm test                    # Run all tests
 npm test -- --watch        # Watch mode
@@ -139,6 +148,7 @@ npm test -- --coverage     # Coverage report
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint               # ESLint check
 npm run lint:fix           # Auto-fix issues
@@ -147,6 +157,7 @@ npm run format             # Prettier formatting
 ```
 
 ### Building
+
 ```bash
 npx expo build:ios        # iOS build
 npx expo build:android    # Android build
@@ -155,17 +166,20 @@ npx expo build:android    # Android build
 ## 📊 Dashboard Features
 
 ### Metrics Cards
+
 - **Nuevas Hoy**: Today's new applications
-- **En Progreso**: Active form submissions  
+- **En Progreso**: Active form submissions
 - **Completadas**: Ready for review
 - **Pendientes Sync**: Items awaiting synchronization
 
 ### KPI Summary
+
 - **Total Today**: Combined daily metrics
 - **Completion Rate**: Weekly success percentage
 - **Sync Status**: Real-time sync health
 
 ### Interactive Elements
+
 - **Manual Sync**: Tap sync indicator to trigger
 - **Pull to Refresh**: Update metrics data
 - **Quick Actions**: Nueva Solicitud CTA button
@@ -173,15 +187,17 @@ npx expo build:android    # Android build
 ## 🔧 Configuration
 
 ### Environment Setup
+
 ```bash
 # Development
 cp .env.example .env.development
 
-# Production  
+# Production
 cp .env.example .env.production
 ```
 
 ### Database Migrations
+
 ```bash
 # Reset database (development only)
 npx expo start --clear
@@ -190,6 +206,7 @@ npx expo start --clear
 ## 🚀 Deployment
 
 ### Expo Application Services (EAS)
+
 ```bash
 # Install EAS CLI
 npm install -g eas-cli
@@ -202,6 +219,7 @@ eas build --platform all
 ```
 
 ### Over-the-Air Updates
+
 ```bash
 # Publish update
 eas update --branch production
@@ -216,6 +234,7 @@ eas update --branch production
 5. **Open** a Pull Request
 
 ### Commit Convention
+
 ```
 feat: add new feature
 fix: bug fix
@@ -238,16 +257,19 @@ chore: maintenance tasks
 ### Common Issues
 
 **Metro bundler issues:**
+
 ```bash
 npx expo start --clear
 ```
 
 **TypeScript errors:**
+
 ```bash
 npx tsc --noEmit --skipLibCheck
 ```
 
 **Dependency conflicts:**
+
 ```bash
 npm install --legacy-peer-deps
 ```
@@ -263,14 +285,16 @@ This project is proprietary software developed for CrediBowpi's internal use. Un
 ## 🎉 Recent Updates
 
 ### v1.0.0 - Agent Dashboard Implementation
+
 - ✅ Complete dashboard with real-time metrics
-- ✅ Sync status management with manual trigger  
+- ✅ Sync status management with manual trigger
 - ✅ MetricCard component with brand styling
 - ✅ KPI calculations and weekly summaries
 - ✅ Offline/online state indicators
 - ✅ Pull-to-refresh functionality
 
 ### Next Steps
+
 - [ ] KYC document capture flow
 - [ ] Credit application forms
 - [ ] Advanced sync conflict resolution

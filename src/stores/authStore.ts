@@ -34,7 +34,7 @@ const secureStorage = {
     try {
       const tokens = await secureStorageService.getAuthTokens();
       const userData = await secureStorageService.getUserData();
-      
+
       if (tokens && userData) {
         return JSON.stringify({
           user: userData,
@@ -54,9 +54,9 @@ const secureStorage = {
         const tokens: AuthTokens = {
           accessToken: data.token,
           refreshToken: data.token, // For now, using same token
-          expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+          expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         };
-        
+
         await secureStorageService.storeAuthTokens(tokens);
         await secureStorageService.storeUserData(data.user);
       }
@@ -83,10 +83,13 @@ const initialState: AuthState = {
 };
 
 // Mock API functions (to be replaced with real API calls)
-const mockLogin = async (email: string, password: string): Promise<{ user: User; token: string }> => {
+const mockLogin = async (
+  email: string,
+  password: string
+): Promise<{ user: User; token: string }> => {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   // Simple validation for demo
   if (email === 'test@credibowpi.com' && password === 'password') {
     return {
@@ -99,13 +102,15 @@ const mockLogin = async (email: string, password: string): Promise<{ user: User;
       token: 'mock-jwt-token-' + Date.now(),
     };
   }
-  
-  throw new Error('Credenciales inválidas. Intenta con test@credibowpi.com / password');
+
+  throw new Error(
+    'Credenciales inválidas. Intenta con test@credibowpi.com / password'
+  );
 };
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    set => ({
       ...initialState,
 
       login: async (email: string, password: string) => {
@@ -124,7 +129,10 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : 'Error al iniciar sesión',
+            error:
+              error instanceof Error
+                ? error.message
+                : 'Error al iniciar sesión',
           });
           throw error;
         }
@@ -142,7 +150,7 @@ export const useAuthStore = create<AuthStore>()(
           });
         } catch (error) {
           console.error('Logout error:', error);
-          set({ 
+          set({
             ...initialState,
             isLoading: false,
           });

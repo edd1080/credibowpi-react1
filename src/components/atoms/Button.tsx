@@ -11,7 +11,12 @@ import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 import { spacing } from '../../constants/spacing';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'sync' | 'retry';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'sync'
+  | 'retry';
 export type ButtonSize = 'small' | 'medium' | 'large';
 
 export interface ButtonProps {
@@ -64,7 +69,11 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'primary' ? colors.neutral.white : colors.primary.deepBlue}
+          color={
+            variant === 'primary'
+              ? colors.neutral.white
+              : colors.primary.deepBlue
+          }
         />
       ) : (
         <Text style={textStyles}>{title}</Text>
@@ -146,7 +155,7 @@ const styles = StyleSheet.create({
   medium: {
     paddingHorizontal: spacing.space16,
     paddingVertical: spacing.space12,
-    minHeight: spacing.touchTarget,
+    minHeight: 48,
   },
   mediumText: {
     fontSize: typography.fontSize.bodyM,
@@ -156,7 +165,7 @@ const styles = StyleSheet.create({
   large: {
     paddingHorizontal: spacing.space24,
     paddingVertical: spacing.space16,
-    minHeight: 52,
+    minHeight: 48,
   },
   largeText: {
     fontSize: typography.fontSize.bodyL,

@@ -21,7 +21,7 @@ export class SyncService {
     }
 
     const store = useAppStore.getState();
-    
+
     try {
       this.isRunning = true;
       store.setSyncStatus(true);
@@ -35,7 +35,7 @@ export class SyncService {
 
       // Get pending sync operations
       const pendingOperations = await this.getPendingSyncOperations();
-      
+
       if (pendingOperations.length === 0) {
         store.addNotification({
           type: 'success',
@@ -44,7 +44,7 @@ export class SyncService {
           isPersistent: false,
           isRead: false,
         });
-        
+
         return {
           success: true,
           syncedCount: 0,
@@ -55,7 +55,7 @@ export class SyncService {
 
       // Process sync operations
       const result = await this.processSyncOperations(pendingOperations);
-      
+
       // Update sync status
       store.setLastSyncTime(new Date());
       store.setPendingSyncCount(result.failedCount);
@@ -84,10 +84,9 @@ export class SyncService {
       }
 
       return result;
-
     } catch (error) {
       console.error('Manual sync failed:', error);
-      
+
       store.addNotification({
         type: 'error',
         title: 'Error de Sincronización',
@@ -101,14 +100,66 @@ export class SyncService {
       });
 
       const pendingOperations = await this.getPendingSyncOperations();
-      
+
       return {
         success: false,
         syncedCount: 0,
         failedCount: pendingOperations.length,
         errors: [error instanceof Error ? error.message : 'Unknown error'],
       };
+    } finally {
+      this.isRunning = false;
+      store.setSyncStatus(false);
+    }
+  }
 
+  /**
+   * Background sync without notifications (silent)
+   */
+  static async backgroundSync(): Promise<SyncResult> {
+    if (this.isRunning) {
+      throw new Error('Sync already in progress');
+    }
+
+    const store = useAppStore.getState();
+
+    try {
+      this.isRunning = true;
+      store.setSyncStatus(true);
+
+      // Get pending sync operations
+      const pendingOperations = await this.getPendingSyncOperations();
+
+      if (pendingOperations.length === 0) {
+        return {
+          success: true,
+          syncedCount: 0,
+          failedCount: 0,
+          errors: [],
+        };
+      }
+
+      // Process sync operations silently
+      const result = await this.processSyncOperations(pendingOperations);
+
+      // Update sync status
+      if (result.success) {
+        store.setLastSyncTime(new Date());
+      }
+      store.setPendingSyncCount(result.failedCount);
+
+      return result;
+    } catch (error) {
+      console.error('Background sync failed:', error);
+
+      const pendingOperations = await this.getPendingSyncOperations();
+
+      return {
+        success: false,
+        syncedCount: 0,
+        failedCount: pendingOperations.length,
+        errors: [error instanceof Error ? error.message : 'Unknown error'],
+      };
     } finally {
       this.isRunning = false;
       store.setSyncStatus(false);
@@ -120,16 +171,16 @@ export class SyncService {
    */
   static startAutoSync(): void {
     const store = useAppStore.getState();
-    
+
     if (!store.preferences.autoSync) {
       return;
     }
 
     const interval = store.preferences.syncInterval * 60 * 1000; // Convert to milliseconds
-    
+
     setInterval(async () => {
       const currentState = useAppStore.getState();
-      
+
       // Only sync if online and not already syncing
       if (currentState.isOnline && !currentState.isSyncing) {
         try {
@@ -151,11 +202,12 @@ export class SyncService {
       // For now, we'll simulate with applications that need sync
       const db = await DatabaseService.getInstance();
       const applications = await db.getAllApplications();
-      
-      const pendingApps = applications.filter(app => 
-        app.syncStatus === 'sync_pending' || 
-        app.syncStatus === 'local_only' ||
-        app.syncStatus === 'sync_failed'
+
+      const pendingApps = applications.filter(
+        app =>
+          app.syncStatus === 'sync_pending' ||
+          app.syncStatus === 'local_only' ||
+          app.syncStatus === 'sync_failed'
       );
 
       return pendingApps.map(app => ({
@@ -167,7 +219,6 @@ export class SyncService {
         retryCount: app.syncStatus === 'sync_failed' ? 1 : 0,
         createdAt: new Date(app.updatedAt),
       }));
-
     } catch (error) {
       console.error('Failed to get pending sync operations:', error);
       return [];
@@ -177,7 +228,9 @@ export class SyncService {
   /**
    * Process sync operations with retry logic
    */
-  private static async processSyncOperations(operations: SyncOperation[]): Promise<SyncResult> {
+  private static async processSyncOperations(
+    operations: SyncOperation[]
+  ): Promise<SyncResult> {
     let syncedCount = 0;
     let failedCount = 0;
     const errors: string[] = [];
@@ -186,16 +239,17 @@ export class SyncService {
       try {
         // Simulate API call with random success/failure
         const success = await this.simulateApiSync(operation);
-        
+
         if (success) {
           syncedCount++;
           await this.updateSyncStatus(operation.entityId, 'synced');
         } else {
           failedCount++;
           await this.updateSyncStatus(operation.entityId, 'sync_failed');
-          errors.push(`Failed to sync ${operation.entityType} ${operation.entityId}`);
+          errors.push(
+            `Failed to sync ${operation.entityType} ${operation.entityId}`
+          );
         }
-
       } catch (error) {
         failedCount++;
         await this.updateSyncStatus(operation.entityId, 'sync_failed');
@@ -214,10 +268,14 @@ export class SyncService {
   /**
    * Simulate API sync call (replace with real API integration)
    */
-  private static async simulateApiSync(_operation: SyncOperation): Promise<boolean> {
+  private static async simulateApiSync(
+    _operation: SyncOperation
+  ): Promise<boolean> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    
+    await new Promise(resolve =>
+      setTimeout(resolve, 1000 + Math.random() * 2000)
+    );
+
     // Simulate 85% success rate
     return Math.random() > 0.15;
   }
@@ -225,15 +283,17 @@ export class SyncService {
   /**
    * Update sync status in database and store
    */
-  private static async updateSyncStatus(entityId: string, syncStatus: SyncStatus): Promise<void> {
+  private static async updateSyncStatus(
+    entityId: string,
+    syncStatus: SyncStatus
+  ): Promise<void> {
     try {
       const db = await DatabaseService.getInstance();
       await db.updateApplicationSyncStatus(entityId, syncStatus);
-      
+
       // Update store
       const store = useAppStore.getState();
       store.updateApplicationSyncStatus(entityId, syncStatus);
-
     } catch (error) {
       console.error('Failed to update sync status:', error);
     }
@@ -250,23 +310,23 @@ export class SyncService {
     try {
       const db = await DatabaseService.getInstance();
       const applications = await db.getAllApplications();
-      
-      const pendingCount = applications.filter(app => 
-        app.syncStatus === 'sync_pending' || app.syncStatus === 'local_only'
+
+      const pendingCount = applications.filter(
+        app =>
+          app.syncStatus === 'sync_pending' || app.syncStatus === 'local_only'
       ).length;
-      
-      const failedCount = applications.filter(app => 
-        app.syncStatus === 'sync_failed'
+
+      const failedCount = applications.filter(
+        app => app.syncStatus === 'sync_failed'
       ).length;
 
       const store = useAppStore.getState();
-      
+
       return {
         pendingCount,
         failedCount,
         lastSyncTime: store.lastSyncTime,
       };
-
     } catch (error) {
       console.error('Failed to get sync status:', error);
       return {

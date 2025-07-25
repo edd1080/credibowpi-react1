@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
-import { SimpleIcons } from '../components/atoms/SimpleIcon';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 // Import screens
 import { HomeScreen } from '../screens/HomeScreen';
@@ -19,25 +19,28 @@ export type TabParamList = {
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
-// Tab icon components using SimpleIcons
+// Tab icon components using Expo Vector Icons
 const HomeIcon = ({ focused }: { focused: boolean }) => (
-  <SimpleIcons.home 
-    size={24} 
-    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  <MaterialIcons
+    name="home"
+    size={24}
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary}
   />
 );
 
 const SolicitudesIcon = ({ focused }: { focused: boolean }) => (
-  <SimpleIcons.assignment 
-    size={24} 
-    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  <Feather
+    name="file-text"
+    size={24}
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary}
   />
 );
 
 const AjustesIcon = ({ focused }: { focused: boolean }) => (
-  <SimpleIcons.settings 
-    size={24} 
-    color={focused ? colors.primary.deepBlue : colors.text.tertiary} 
+  <Feather
+    name="settings"
+    size={24}
+    color={focused ? colors.primary.deepBlue : colors.text.tertiary}
   />
 );
 
@@ -51,6 +54,7 @@ export const TabNavigator: React.FC = () => {
         tabBarInactiveTintColor: colors.text.tertiary,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarItemStyle: styles.tabBarItem,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tab.Screen
@@ -87,20 +91,16 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.neutral.gray200,
     paddingTop: spacing.space8,
-    paddingBottom: spacing.space8,
-    height: 60,
   },
-  
+
   tabBarLabel: {
     fontSize: typography.fontSize.caption,
     fontFamily: typography.fontFamily.medium,
     fontWeight: typography.fontWeight.medium,
     marginTop: spacing.space4,
   },
-  
+
   tabBarItem: {
     paddingVertical: spacing.space4,
   },
-  
-
 });

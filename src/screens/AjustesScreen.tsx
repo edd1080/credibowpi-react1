@@ -11,12 +11,14 @@ import { AppShell } from '../components/organisms';
 import { useAuthStore } from '../stores/authStore';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 interface SettingsItemProps {
   title: string;
   subtitle?: string;
   onPress: () => void;
-  icon?: string;
+  iconName?: string;
+  iconLibrary?: 'MaterialIcons' | 'Feather';
   showArrow?: boolean;
 }
 
@@ -24,30 +26,43 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   title,
   subtitle,
   onPress,
-  icon = '⚙️',
+  iconName = 'settings',
+  iconLibrary = 'MaterialIcons',
   showArrow = true,
-}) => (
-  <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
-    <View style={styles.settingsItemLeft}>
-      <Text style={styles.settingsIcon}>{icon}</Text>
-      <View style={styles.settingsItemContent}>
-        <Typography variant="bodyM" color="primary" weight="medium">
-          {title}
-        </Typography>
-        {subtitle && (
-          <Typography variant="bodyS" color="secondary">
-            {subtitle}
+}) => {
+  const renderIcon = () => {
+    const IconComponent = iconLibrary === 'Feather' ? Feather : MaterialIcons;
+    return (
+      <IconComponent
+        name={iconName as any}
+        size={20}
+        color={colors.text.secondary}
+        style={styles.settingsIcon}
+      />
+    );
+  };
+
+  return (
+    <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
+      <View style={styles.settingsItemLeft}>
+        {renderIcon()}
+        <View style={styles.settingsItemContent}>
+          <Typography variant="bodyM" color="primary" weight="medium">
+            {title}
           </Typography>
-        )}
+          {subtitle && (
+            <Typography variant="bodyS" color="secondary">
+              {subtitle}
+            </Typography>
+          )}
+        </View>
       </View>
-    </View>
-    {showArrow && (
-      <Typography variant="bodyM" color="tertiary">
-        →
-      </Typography>
-    )}
-  </TouchableOpacity>
-);
+      {showArrow && (
+        <Feather name="chevron-right" size={20} color={colors.text.tertiary} />
+      )}
+    </TouchableOpacity>
+  );
+};
 
 export const AjustesScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -128,10 +143,15 @@ export const AjustesScreen: React.FC = () => {
 
         {/* User Profile Section */}
         <View style={styles.section}>
-          <Typography variant="h3" color="primary" weight="medium" style={styles.sectionTitle}>
+          <Typography
+            variant="h3"
+            color="primary"
+            weight="medium"
+            style={styles.sectionTitle}
+          >
             Perfil
           </Typography>
-          
+
           <View style={styles.profileCard}>
             <View style={styles.profileAvatar}>
               <Typography variant="h2" color="inverse" weight="bold">
@@ -154,22 +174,29 @@ export const AjustesScreen: React.FC = () => {
 
         {/* Settings Section */}
         <View style={styles.section}>
-          <Typography variant="h3" color="primary" weight="medium" style={styles.sectionTitle}>
+          <Typography
+            variant="h3"
+            color="primary"
+            weight="medium"
+            style={styles.sectionTitle}
+          >
             Configuración
           </Typography>
-          
+
           <View style={styles.settingsGroup}>
             <SettingsItem
               title="Sincronización"
               subtitle="Configurar sincronización automática"
-              icon="🔄"
+              iconName="sync"
+              iconLibrary="MaterialIcons"
               onPress={handleSyncSettings}
             />
-            
+
             <SettingsItem
               title="Notificaciones"
               subtitle="Gestionar alertas y notificaciones"
-              icon="🔔"
+              iconName="bell"
+              iconLibrary="Feather"
               onPress={handleNotificationSettings}
             />
           </View>
@@ -177,22 +204,29 @@ export const AjustesScreen: React.FC = () => {
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Typography variant="h3" color="primary" weight="medium" style={styles.sectionTitle}>
+          <Typography
+            variant="h3"
+            color="primary"
+            weight="medium"
+            style={styles.sectionTitle}
+          >
             Soporte
           </Typography>
-          
+
           <View style={styles.settingsGroup}>
             <SettingsItem
               title="Ayuda"
               subtitle="Obtener ayuda y soporte"
-              icon="❓"
+              iconName="help-circle"
+              iconLibrary="Feather"
               onPress={handleHelp}
             />
-            
+
             <SettingsItem
               title="Acerca de"
               subtitle="Información de la aplicación"
-              icon="ℹ️"
+              iconName="info"
+              iconLibrary="Feather"
               onPress={handleAbout}
             />
           </View>
@@ -216,28 +250,39 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: spacing.space24,
     paddingVertical: spacing.space16,
+    backgroundColor: colors.background.app,
   },
-  
+
   header: {
     marginBottom: spacing.space32,
   },
-  
+
   section: {
     marginBottom: spacing.space32,
   },
-  
+
   sectionTitle: {
     marginBottom: spacing.space16,
   },
-  
+
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background.secondary,
-    padding: spacing.space16,
-    borderRadius: spacing.borderRadius.md,
+    backgroundColor: colors.background.primary,
+    padding: spacing.space20,
+    borderRadius: spacing.borderRadius.xl,
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.neutral.gray200,
   },
-  
+
   profileAvatar: {
     width: 56,
     height: 56,
@@ -247,17 +292,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: spacing.space16,
   },
-  
+
   profileInfo: {
     flex: 1,
   },
-  
+
   settingsGroup: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: spacing.borderRadius.md,
+    backgroundColor: colors.background.primary,
+    borderRadius: spacing.borderRadius.xl,
     overflow: 'hidden',
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.neutral.gray200,
   },
-  
+
   settingsItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -266,22 +321,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.neutral.gray200,
   },
-  
+
   settingsItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  
+
   settingsIcon: {
-    fontSize: 20,
     marginRight: spacing.space12,
   },
-  
+
   settingsItemContent: {
     flex: 1,
   },
-  
+
   logoutSection: {
     marginTop: 'auto',
     paddingTop: spacing.space32,

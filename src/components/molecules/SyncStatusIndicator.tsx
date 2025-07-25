@@ -45,7 +45,9 @@ export const SyncStatusIndicator: React.FC<SyncStatusIndicatorProps> = ({
       case 'syncing':
         return 'Sincronizando...';
       case 'success':
-        return lastSyncTime ? `Sincronizado ${formatTime(lastSyncTime)}` : 'Sincronizado';
+        return lastSyncTime
+          ? `Sincronizado ${formatTime(lastSyncTime)}`
+          : 'Sincronizado';
       case 'error':
         return 'Error de sincronización';
       default:
@@ -70,13 +72,13 @@ export const SyncStatusIndicator: React.FC<SyncStatusIndicatorProps> = ({
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
-    
+
     if (diffMins < 1) return 'ahora';
     if (diffMins < 60) return `hace ${diffMins}m`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `hace ${diffHours}h`;
-    
+
     return date.toLocaleDateString();
   };
 
@@ -91,20 +93,14 @@ export const SyncStatusIndicator: React.FC<SyncStatusIndicatorProps> = ({
       ]}
       onPress={onPress}
     >
-      <View style={styles.iconContainer}>
-        {getStatusIcon()}
-      </View>
-      
+      <View style={styles.iconContainer}>{getStatusIcon()}</View>
+
       {!compact && (
         <View style={styles.textContainer}>
-          <Typography
-            variant="bodyS"
-            color={getStatusColor()}
-            weight="medium"
-          >
+          <Typography variant="bodyS" color={getStatusColor()} weight="medium">
             {getStatusText()}
           </Typography>
-          
+
           {pendingCount > 0 && status !== 'syncing' && (
             <View style={styles.badge}>
               <Typography variant="caption" color="inverse">
@@ -114,7 +110,7 @@ export const SyncStatusIndicator: React.FC<SyncStatusIndicatorProps> = ({
           )}
         </View>
       )}
-      
+
       {compact && pendingCount > 0 && (
         <View style={styles.compactBadge}>
           <Typography variant="caption" color="inverse">
@@ -135,16 +131,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.secondary,
     borderRadius: spacing.borderRadius.md,
   },
-  
+
   containerCompact: {
     paddingHorizontal: spacing.space8,
     paddingVertical: spacing.xs,
   },
-  
+
   containerTouchable: {
     opacity: 1,
   },
-  
+
   iconContainer: {
     marginRight: spacing.space8,
     width: 16,
@@ -152,14 +148,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   textContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  
+
   badge: {
     backgroundColor: colors.primary.deepBlue,
     borderRadius: spacing.borderRadius.full,
@@ -169,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.xs,
   },
-  
+
   compactBadge: {
     backgroundColor: colors.primary.deepBlue,
     borderRadius: spacing.borderRadius.full,
