@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { Typography, Button } from '../components/atoms';
+import { HugeIcon } from '../components/atoms/HugeIcon';
 import { AppShell } from '../components/organisms';
 import { useAuthStore } from '../stores/authStore';
 import { colors } from '../constants/colors';
@@ -18,7 +19,7 @@ interface SettingsItemProps {
   subtitle?: string;
   onPress: () => void;
   iconName?: string;
-  iconLibrary?: 'MaterialIcons' | 'Feather';
+  iconLibrary?: 'MaterialIcons' | 'Feather' | 'HugeIcons';
   showArrow?: boolean;
 }
 
@@ -31,6 +32,17 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   showArrow = true,
 }) => {
   const renderIcon = () => {
+    // Try HugeIcon first, fallback to other libraries
+    if (iconLibrary === 'HugeIcons') {
+      return (
+        <HugeIcon
+          name={iconName || 'settings'}
+          size={20}
+          color={colors.text.secondary}
+        />
+      );
+    }
+    
     const IconComponent = iconLibrary === 'Feather' ? Feather : MaterialIcons;
     return (
       <IconComponent
@@ -130,7 +142,7 @@ export const AjustesScreen: React.FC = () => {
   };
 
   return (
-    <AppShell onSyncPress={handleSync} showSyncStatus={false}>
+    <AppShell onSyncPress={handleSync}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Typography variant="h2" color="primary" weight="bold">
@@ -187,16 +199,16 @@ export const AjustesScreen: React.FC = () => {
             <SettingsItem
               title="Sincronización"
               subtitle="Configurar sincronización automática"
-              iconName="sync"
-              iconLibrary="MaterialIcons"
+              iconName="sync01"
+              iconLibrary="HugeIcons"
               onPress={handleSyncSettings}
             />
 
             <SettingsItem
               title="Notificaciones"
               subtitle="Gestionar alertas y notificaciones"
-              iconName="bell"
-              iconLibrary="Feather"
+              iconName="notification01"
+              iconLibrary="HugeIcons"
               onPress={handleNotificationSettings}
             />
           </View>
@@ -217,16 +229,16 @@ export const AjustesScreen: React.FC = () => {
             <SettingsItem
               title="Ayuda"
               subtitle="Obtener ayuda y soporte"
-              iconName="help-circle"
-              iconLibrary="Feather"
+              iconName="helpCircle"
+              iconLibrary="HugeIcons"
               onPress={handleHelp}
             />
 
             <SettingsItem
               title="Acerca de"
               subtitle="Información de la aplicación"
-              iconName="info"
-              iconLibrary="Feather"
+              iconName="informationCircle"
+              iconLibrary="HugeIcons"
               onPress={handleAbout}
             />
           </View>
