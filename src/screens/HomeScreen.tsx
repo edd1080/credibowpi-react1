@@ -148,10 +148,10 @@ export const HomeScreen: React.FC = () => {
         {/* Metrics Cards */}
         <View style={styles.metricsContainer}>
           <Typography
-            variant="h3"
+            variant="bodyM"
             color="primary"
             weight="medium"
-            style={styles.sectionTitle}
+            style={styles.metricsSectionTitle}
           >
             Métricas del Día
           </Typography>
@@ -192,38 +192,38 @@ export const HomeScreen: React.FC = () => {
         {/* Weekly Summary */}
         <View style={styles.summaryContainer}>
           <Typography
-            variant="h3"
+            variant="bodyM"
             color="primary"
             weight="medium"
-            style={styles.sectionTitle}
+            style={styles.summarySectionTitle}
           >
             Resumen Semanal
           </Typography>
 
           <View style={styles.summaryCard}>
             <View style={styles.summaryRow}>
-              <Typography variant="bodyM" color="secondary">
+              <Typography variant="bodyM" color="secondary" weight="regular">
                 Total de solicitudes
               </Typography>
-              <Typography variant="bodyM" color="primary" weight="medium">
+              <Typography variant="h3" color="primary" weight="medium">
                 {metrics.weekly.totalApplications}
               </Typography>
             </View>
 
             <View style={styles.summaryRow}>
-              <Typography variant="bodyM" color="secondary">
+              <Typography variant="bodyM" color="secondary" weight="regular">
                 Tasa de completación
               </Typography>
-              <Typography variant="bodyM" color="success" weight="medium">
+              <Typography variant="h3" color="success" weight="medium">
                 {Math.round(metrics.weekly.completionRate)}%
               </Typography>
             </View>
 
             <View style={styles.summaryRow}>
-              <Typography variant="bodyM" color="secondary">
+              <Typography variant="bodyM" color="secondary" weight="regular">
                 Tiempo promedio
               </Typography>
-              <Typography variant="bodyM" color="primary" weight="medium">
+              <Typography variant="h3" color="primary" weight="medium">
                 {Math.round(metrics.weekly.averageTimePerApplication)}min
               </Typography>
             </View>
@@ -237,34 +237,36 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
-    paddingHorizontal: spacing.space24,
+    paddingHorizontal: spacing.space20,
     paddingVertical: spacing.space16,
     backgroundColor: colors.background.app,
   },
 
   header: {
-    marginBottom: spacing.space24,
+    marginBottom: spacing.space16, // 16px separación entre encabezado y métricas
   },
 
   welcomeSection: {
     marginBottom: spacing.space8,
   },
 
+  metricsSectionTitle: {
+    marginBottom: spacing.space16, // 16px separación entre título y cards
+  },
 
-
-  sectionTitle: {
+  summarySectionTitle: {
     marginBottom: spacing.space16,
   },
 
   metricsContainer: {
-    marginBottom: spacing.space32,
+    marginBottom: spacing.space16, // 16px separación entre cards y botones
   },
 
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: spacing.space12,
+    gap: spacing.space4,
   },
 
   metricCardContainer: {
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
   },
 
   actionsContainer: {
-    marginBottom: spacing.space32,
+    marginBottom: spacing.space32, // 32px separación entre botones y resumen semanal
   },
 
   primaryAction: {
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
   },
 
   secondaryAction: {
-    marginBottom: spacing.space16,
+    marginBottom: 0, // Removemos el margin bottom del último botón
   },
 
   summaryContainer: {
@@ -308,6 +310,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: spacing.space8,
+    paddingVertical: spacing.space12, // Aumentamos el padding vertical para mejor jerarquía
   },
 });

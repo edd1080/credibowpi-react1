@@ -20,10 +20,7 @@
     "@expo-google-fonts/dm-sans": "^0.4.1",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.1.1",
-    "@hugeicons/hugeicons-pro": "^0.0.6",
-    "@hugeicons/react-native": "^1.0.7",
-    "@hugeicons/react-native-pro": "^0.1.7",
-    "@hugeicons/react-pro": "^0.3.2",
+
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/bottom-tabs": "^7.4.2",

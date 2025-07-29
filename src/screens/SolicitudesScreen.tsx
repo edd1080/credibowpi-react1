@@ -1,12 +1,23 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Typography, Button } from '../components/atoms';
 import { LoanRequestCard } from '../components/molecules';
 import { AppShell } from '../components/organisms';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
+import { SolicitudesStackParamList } from '../navigation/SolicitudesStackNavigator';
 
-export const SolicitudesScreen: React.FC = () => {
+type SolicitudesScreenNavigationProp = StackNavigationProp<
+  SolicitudesStackParamList,
+  'SolicitudesList'
+>;
+
+interface SolicitudesScreenProps {
+  navigation: SolicitudesScreenNavigationProp;
+}
+
+export const SolicitudesScreen: React.FC<SolicitudesScreenProps> = ({ navigation }) => {
   const handleSync = async () => {
     // Simulate sync operation
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -55,8 +66,7 @@ export const SolicitudesScreen: React.FC = () => {
   ];
 
   const handleCardPress = (id: string) => {
-    console.log('Card pressed:', id);
-    // TODO: Navigate to loan request details
+    navigation.navigate('DetalleSolicitud', { id });
   };
 
   return (

@@ -6,3 +6,6 @@ export * from './LoginScreen';
 export * from './HomeScreen';
 export * from './SolicitudesScreen';
 export * from './AjustesScreen';
+export * from './DetalleSolicitudScreen';
+export * from './AcercaDeScreen';
+export * from './NotificacionesScreen';

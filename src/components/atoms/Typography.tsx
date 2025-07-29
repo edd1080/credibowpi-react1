@@ -10,8 +10,10 @@ export type TypographyVariant =
   | 'bodyL'
   | 'bodyM'
   | 'bodyS'
+  | 'bodyXS'
   | 'label'
-  | 'caption';
+  | 'caption'
+  | 'minicaption';
 export type TypographyColor =
   | 'primary'
   | 'secondary'
@@ -92,6 +94,10 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.bodyS,
     lineHeight: typography.lineHeight.bodyS,
   },
+  bodyXS: {
+    fontSize: typography.fontSize.bodyXS,
+    lineHeight: typography.lineHeight.bodyXS,
+  },
   label: {
     fontSize: typography.fontSize.label,
     lineHeight: typography.lineHeight.label,
@@ -101,6 +107,10 @@ const styles = StyleSheet.create({
   caption: {
     fontSize: typography.fontSize.caption,
     lineHeight: typography.lineHeight.caption,
+  },
+  minicaption: {
+    fontSize: typography.fontSize.minicaption,
+    lineHeight: typography.lineHeight.minicaption,
   },
 
   // Color styles

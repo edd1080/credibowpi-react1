@@ -15,8 +15,10 @@ export const typography = {
     bodyL: 18,
     bodyM: 16,
     bodyS: 14,
+    bodyXS: 12,
     label: 12,
     caption: 10,
+    minicaption: 8,
   },
 
   // Line Heights
@@ -27,8 +29,10 @@ export const typography = {
     bodyL: 26,
     bodyM: 24,
     bodyS: 20,
+    bodyXS: 16,
     label: 16,
     caption: 14,
+    minicaption: 12,
   },
 
   // Font Weights

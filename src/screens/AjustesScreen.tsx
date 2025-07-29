@@ -7,19 +7,18 @@ import {
   Alert,
 } from 'react-native';
 import { Typography, Button } from '../components/atoms';
-import { HugeIcon } from '../components/atoms/HugeIcon';
 import { AppShell } from '../components/organisms';
 import { useAuthStore } from '../stores/authStore';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
-import { MaterialIcons, Feather } from '@expo/vector-icons';
+import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
 
 interface SettingsItemProps {
   title: string;
   subtitle?: string;
   onPress: () => void;
   iconName?: string;
-  iconLibrary?: 'MaterialIcons' | 'Feather' | 'HugeIcons';
+  iconLibrary?: 'MaterialIcons' | 'Feather' | 'Ionicons';
   showArrow?: boolean;
 }
 
@@ -28,22 +27,24 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   subtitle,
   onPress,
   iconName = 'settings',
-  iconLibrary = 'MaterialIcons',
+  iconLibrary = 'Ionicons',
   showArrow = true,
 }) => {
   const renderIcon = () => {
-    // Try HugeIcon first, fallback to other libraries
-    if (iconLibrary === 'HugeIcons') {
-      return (
-        <HugeIcon
-          name={iconName || 'settings'}
-          size={20}
-          color={colors.text.secondary}
-        />
-      );
+    let IconComponent;
+    switch (iconLibrary) {
+      case 'Feather':
+        IconComponent = Feather;
+        break;
+      case 'MaterialIcons':
+        IconComponent = MaterialIcons;
+        break;
+      case 'Ionicons':
+      default:
+        IconComponent = Ionicons;
+        break;
     }
     
-    const IconComponent = iconLibrary === 'Feather' ? Feather : MaterialIcons;
     return (
       <IconComponent
         name={iconName as any}
@@ -59,7 +60,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
       <View style={styles.settingsItemLeft}>
         {renderIcon()}
         <View style={styles.settingsItemContent}>
-          <Typography variant="bodyM" color="primary" weight="medium">
+          <Typography variant="bodyM" color="primary" weight="bold">
             {title}
           </Typography>
           {subtitle && (
@@ -105,18 +106,27 @@ export const AjustesScreen: React.FC = () => {
 
   const handleSyncSettings = () => {
     Alert.alert(
-      'Configuración de Sincronización',
-      'Aquí podrás configurar las opciones de sincronización.',
-      [{ text: 'Entendido', style: 'default' }]
+      'Estado de Sincronización',
+      'Última sincronización: Hace 5 minutos\nElementos pendientes: 3\n\n¿Deseas sincronizar ahora?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Sincronizar',
+          style: 'default',
+          onPress: () => {
+            Alert.alert('Sincronizando...', 'Los datos se están sincronizando.');
+          },
+        },
+      ]
     );
   };
 
   const handleNotificationSettings = () => {
-    Alert.alert(
-      'Configuración de Notificaciones',
-      'Aquí podrás configurar las notificaciones.',
-      [{ text: 'Entendido', style: 'default' }]
-    );
+    // Navegar a la pantalla de configuración de notificaciones
+    Alert.alert('Navegación', 'Ir a configuración de notificaciones');
   };
 
   const handleHelp = () => {
@@ -128,11 +138,8 @@ export const AjustesScreen: React.FC = () => {
   };
 
   const handleAbout = () => {
-    Alert.alert(
-      'Acerca de CrediBowpi',
-      'CrediBowpi Mobile v1.0.0\nPlataforma de crédito digital para el campo.',
-      [{ text: 'Entendido', style: 'default' }]
-    );
+    // Navegar a la pantalla "Acerca de"
+    Alert.alert('Navegación', 'Ir a pantalla Acerca de');
   };
 
   const handleSync = async () => {
@@ -156,7 +163,7 @@ export const AjustesScreen: React.FC = () => {
         {/* User Profile Section */}
         <View style={styles.section}>
           <Typography
-            variant="h3"
+            variant="bodyM"
             color="primary"
             weight="medium"
             style={styles.sectionTitle}
@@ -171,8 +178,8 @@ export const AjustesScreen: React.FC = () => {
               </Typography>
             </View>
             <View style={styles.profileInfo}>
-              <Typography variant="bodyL" color="primary" weight="medium">
-                {user?.name || 'Agente'}
+              <Typography variant="bodyL" color="primary" weight="bold">
+                {user?.name || 'Agente de Campo'}
               </Typography>
               <Typography variant="bodyM" color="secondary">
                 {user?.email}
@@ -187,7 +194,7 @@ export const AjustesScreen: React.FC = () => {
         {/* Settings Section */}
         <View style={styles.section}>
           <Typography
-            variant="h3"
+            variant="bodyM"
             color="primary"
             weight="medium"
             style={styles.sectionTitle}
@@ -199,16 +206,16 @@ export const AjustesScreen: React.FC = () => {
             <SettingsItem
               title="Sincronización"
               subtitle="Configurar sincronización automática"
-              iconName="sync01"
-              iconLibrary="HugeIcons"
+              iconName="sync"
+              iconLibrary="Ionicons"
               onPress={handleSyncSettings}
             />
 
             <SettingsItem
               title="Notificaciones"
               subtitle="Gestionar alertas y notificaciones"
-              iconName="notification01"
-              iconLibrary="HugeIcons"
+              iconName="notifications"
+              iconLibrary="Ionicons"
               onPress={handleNotificationSettings}
             />
           </View>
@@ -217,7 +224,7 @@ export const AjustesScreen: React.FC = () => {
         {/* Support Section */}
         <View style={styles.section}>
           <Typography
-            variant="h3"
+            variant="bodyM"
             color="primary"
             weight="medium"
             style={styles.sectionTitle}
@@ -229,16 +236,16 @@ export const AjustesScreen: React.FC = () => {
             <SettingsItem
               title="Ayuda"
               subtitle="Obtener ayuda y soporte"
-              iconName="helpCircle"
-              iconLibrary="HugeIcons"
+              iconName="help-circle"
+              iconLibrary="Ionicons"
               onPress={handleHelp}
             />
 
             <SettingsItem
               title="Acerca de"
               subtitle="Información de la aplicación"
-              iconName="informationCircle"
-              iconLibrary="HugeIcons"
+              iconName="information-circle"
+              iconLibrary="Ionicons"
               onPress={handleAbout}
             />
           </View>
@@ -246,11 +253,11 @@ export const AjustesScreen: React.FC = () => {
 
         {/* Logout Section */}
         <View style={styles.logoutSection}>
-          <Button
-            title="Cerrar Sesión"
-            variant="secondary"
-            onPress={handleLogout}
-          />
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Typography variant="bodyM" color="inverse" weight="medium">
+              Cerrar Sesión
+            </Typography>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </AppShell>
@@ -351,5 +358,22 @@ const styles = StyleSheet.create({
   logoutSection: {
     marginTop: 'auto',
     paddingTop: spacing.space32,
+  },
+
+  logoutButton: {
+    backgroundColor: colors.error,
+    paddingVertical: spacing.space16,
+    paddingHorizontal: spacing.space24,
+    borderRadius: spacing.borderRadius.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
 });

@@ -46,7 +46,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       {/* Status Bar */}
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={colors.background.primary}
+        backgroundColor={colors.background.app}
         translucent={false}
       />
 
@@ -71,7 +71,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.background.app, // Cambiado para que coincida con el fondo del app
   },
 
   content: {
@@ -81,6 +81,4 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
   },
-
-
 });
