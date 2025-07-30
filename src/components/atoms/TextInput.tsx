@@ -38,60 +38,42 @@ export const TextInput: React.FC<TextInputProps> = React.memo(
 
     const hasError = !!error;
 
-    // Memoize callbacks to prevent unnecessary re-renders
-    const handleFocus = useCallback(
-      (e: any) => {
-        setIsFocused(true);
-        props.onFocus?.(e);
-      },
-      [props]
-    );
+    // Simplified callbacks without dependencies to prevent re-renders
+    const handleFocus = useCallback((e: any) => {
+      setIsFocused(true);
+      props.onFocus?.(e);
+    }, []);
 
-    const handleBlur = useCallback(
-      (e: any) => {
-        setIsFocused(false);
-        props.onBlur?.(e);
-      },
-      [props]
-    );
+    const handleBlur = useCallback((e: any) => {
+      setIsFocused(false);
+      props.onBlur?.(e);
+    }, []);
 
     const handleRightIconPress = useCallback(() => {
       onRightIconPress?.();
     }, [onRightIconPress]);
 
-    // Pre-calculate styles to avoid recalculation on each render
-    const labelStyle = useMemo(
-      () => [
-        styles.label,
-        hasError && styles.labelError,
-        isFocused && styles.labelFocused,
-      ],
-      [hasError, isFocused]
-    );
+    // Simplified style calculations
+    const labelStyle = [
+      styles.label,
+      hasError && styles.labelError,
+      isFocused && styles.labelFocused,
+    ];
 
-    const inputContainerStyle = useMemo(
-      () => [
-        styles.inputContainer,
-        hasError && styles.inputContainerError,
-        isFocused && !hasError && styles.inputContainerFocused,
-      ],
-      [isFocused, hasError]
-    );
+    const inputContainerStyle = [
+      styles.inputContainer,
+      hasError && styles.inputContainerError,
+      isFocused && !hasError && styles.inputContainerFocused,
+    ];
 
-    const inputTextStyle = useMemo(
-      () => [
-        styles.input,
-        leftIcon && styles.inputWithLeftIcon,
-        rightIcon && styles.inputWithRightIcon,
-        inputStyle,
-      ],
-      [leftIcon, rightIcon, inputStyle]
-    );
+    const inputTextStyle = [
+      styles.input,
+      leftIcon && styles.inputWithLeftIcon,
+      rightIcon && styles.inputWithRightIcon,
+      inputStyle,
+    ];
 
-    const helperTextStyle = useMemo(
-      () => [styles.helperText, hasError && styles.errorText],
-      [hasError]
-    );
+    const helperTextStyle = [styles.helperText, hasError && styles.errorText];
 
     return (
       <View style={[styles.container, containerStyle]}>

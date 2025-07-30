@@ -9,3 +9,4 @@ export * from './AjustesScreen';
 export * from './DetalleSolicitudScreen';
 export * from './AcercaDeScreen';
 export * from './NotificacionesScreen';
+export * from './FormTestScreen';

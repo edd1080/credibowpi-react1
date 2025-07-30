@@ -122,10 +122,8 @@ export const LoginScreen: React.FC = () => {
             <TextInput
               label="Correo electrónico"
               value={email}
-              onChangeText={text => {
-                setEmail(text);
-                if (hasAttemptedLogin && emailError) validateEmail(text);
-              }}
+              onChangeText={setEmail}
+              onBlur={() => hasAttemptedLogin && validateEmail(email)}
               error={hasAttemptedLogin ? emailError : ''}
               placeholder="ejemplo@credibowpi.com"
               keyboardType="email-address"
@@ -137,10 +135,8 @@ export const LoginScreen: React.FC = () => {
             <TextInput
               label="Contraseña"
               value={password}
-              onChangeText={text => {
-                setPassword(text);
-                if (hasAttemptedLogin && passwordError) validatePassword(text);
-              }}
+              onChangeText={setPassword}
+              onBlur={() => hasAttemptedLogin && validatePassword(password)}
               error={hasAttemptedLogin ? passwordError : ''}
               placeholder="Ingresa tu contraseña"
               secureTextEntry={!showPassword}
@@ -206,8 +202,8 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    alignItems: 'center',
-    marginBottom: spacing.space48,
+    alignItems: 'flex-start',
+    marginBottom: spacing.space32,
   },
 
   logoContainer: {
@@ -217,16 +213,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.deepBlue,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.space16,
+    marginBottom: spacing.space12,
   },
 
   title: {
-    marginBottom: spacing.space8,
-    textAlign: 'center',
+    marginBottom: spacing.space4,
+    textAlign: 'left',
   },
 
   subtitle: {
-    textAlign: 'center',
+    textAlign: 'left',
   },
 
   form: {

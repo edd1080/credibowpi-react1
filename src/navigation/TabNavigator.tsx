@@ -4,15 +4,17 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
-import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 // Import screens
 import { HomeScreen, AjustesScreen } from '../screens';
+import { FormTestScreen } from '../screens/FormTestScreen';
 import { SolicitudesStackNavigator } from './SolicitudesStackNavigator';
 
 export type TabParamList = {
   HomeTab: undefined;
   SolicitudesTab: undefined;
+  FormTestTab: undefined;
   AjustesTab: undefined;
 };
 
@@ -27,6 +29,11 @@ const HomeIcon = ({ focused }: { focused: boolean }) => {
 const SolicitudesIcon = ({ focused }: { focused: boolean }) => {
   const iconColor = focused ? colors.primary.deepBlue : colors.text.tertiary;
   return <Ionicons name="document-text" size={24} color={iconColor} />;
+};
+
+const FormTestIcon = ({ focused }: { focused: boolean }) => {
+  const iconColor = focused ? colors.primary.deepBlue : colors.text.tertiary;
+  return <Ionicons name="clipboard" size={24} color={iconColor} />;
 };
 
 const AjustesIcon = ({ focused }: { focused: boolean }) => {
@@ -61,6 +68,14 @@ export const TabNavigator: React.FC = () => {
         options={{
           title: 'Solicitudes',
           tabBarIcon: SolicitudesIcon,
+        }}
+      />
+      <Tab.Screen
+        name="FormTestTab"
+        component={FormTestScreen}
+        options={{
+          title: 'Form Test',
+          tabBarIcon: FormTestIcon,
         }}
       />
       <Tab.Screen

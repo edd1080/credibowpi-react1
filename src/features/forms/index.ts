@@ -1,8 +1,20 @@
 // Forms feature module
 // Export all form-related components, hooks, and services
 
-// TODO: Implement forms feature
-// export * from './components';
-// export * from './hooks';
-// export * from './services';
-// export * from './types';
+// Components
+export { FormField } from './components/FormField';
+export { FormSectionPicker } from './components/FormSectionPicker';
+
+// Hooks
+export { useForm } from './hooks/useForm';
+export type { UseFormOptions, UseFormReturn } from './hooks/useForm';
+
+// Types
+export * from './types';
+
+// Schemas
+export { applicationFormSchema } from './schemas/applicationFormSchema';
+
+// Utilities
+export * from './utils/validation';
+export * from './utils/conditionalLogic';
