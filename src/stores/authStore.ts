@@ -7,7 +7,8 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'agent' | 'supervisor';
+  role?: 'agent' | 'supervisor';
+  profile?: any; // For Bowpi user profile data
 }
 
 export interface AuthState {
@@ -16,6 +17,11 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  // Bowpi specific state
+  bowpiToken?: string;
+  bowpiUserData?: any;
+  sessionId?: string;
+  isOfflineMode: boolean;
 }
 
 export interface AuthActions {
@@ -24,6 +30,12 @@ export interface AuthActions {
   clearError: () => void;
   setLoading: (loading: boolean) => void;
   checkAuthStatus: () => Promise<void>;
+  // Bowpi specific actions
+  setBowpiAuth: (token: string, userData: any) => void;
+  clearBowpiAuth: () => void;
+  setOfflineMode: (offline: boolean) => void;
+  setAuthenticated: (authenticated: boolean) => void;
+  setUser: (user: User | null) => void;
 }
 
 export type AuthStore = AuthState & AuthActions;
@@ -80,33 +92,14 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  bowpiToken: undefined,
+  bowpiUserData: undefined,
+  sessionId: undefined,
+  isOfflineMode: false,
 };
 
-// Mock API functions (to be replaced with real API calls)
-const mockLogin = async (
-  email: string,
-  password: string
-): Promise<{ user: User; token: string }> => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // Simple validation for demo
-  if (email === 'test@credibowpi.com' && password === 'password') {
-    return {
-      user: {
-        id: '1',
-        email,
-        name: 'Agente de Campo',
-        role: 'agent',
-      },
-      token: 'mock-jwt-token-' + Date.now(),
-    };
-  }
-
-  throw new Error(
-    'Credenciales inválidas. Intenta con test@credibowpi.com / password'
-  );
-};
+// Import Bowpi authentication integration
+import { authIntegration } from '../services/AuthIntegrationService';
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -114,21 +107,12 @@ export const useAuthStore = create<AuthStore>()(
       ...initialState,
 
       login: async (email: string, password: string) => {
-        set({ isLoading: true, error: null });
-
+        // Use Bowpi authentication integration
         try {
-          const { user, token } = await mockLogin(email, password);
-
-          set({
-            user,
-            token,
-            isAuthenticated: true,
-            isLoading: false,
-            error: null,
-          });
+          await authIntegration.loginWithBowpi(email, password);
         } catch (error) {
+          // Set error in store
           set({
-            isLoading: false,
             error:
               error instanceof Error
                 ? error.message
@@ -139,22 +123,8 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       logout: async () => {
-        set({ isLoading: true });
-
-        try {
-          await secureStorageService.clearAllData();
-
-          set({
-            ...initialState,
-            isLoading: false,
-          });
-        } catch (error) {
-          console.error('Logout error:', error);
-          set({
-            ...initialState,
-            isLoading: false,
-          });
-        }
+        // Use Bowpi authentication integration
+        await authIntegration.logoutWithBowpi();
       },
 
       clearError: () => set({ error: null }),
@@ -162,31 +132,37 @@ export const useAuthStore = create<AuthStore>()(
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
       checkAuthStatus: async () => {
-        try {
-          const hasValidSession = await secureStorageService.hasValidSession();
-          const userData = await secureStorageService.getUserData();
-          const tokens = await secureStorageService.getAuthTokens();
+        // Use Bowpi authentication integration
+        await authIntegration.checkBowpiAuthStatus();
+      },
 
-          if (hasValidSession && userData && tokens) {
-            set({
-              user: userData,
-              token: tokens.accessToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-          } else {
-            set({
-              ...initialState,
-              isLoading: false,
-            });
-          }
-        } catch (error) {
-          console.error('Auth status check error:', error);
-          set({
-            ...initialState,
-            isLoading: false,
-          });
-        }
+      // Bowpi specific actions
+      setBowpiAuth: (token: string, userData: any) => {
+        set({
+          bowpiToken: token,
+          bowpiUserData: userData,
+          sessionId: userData.userProfile?.requestId || userData.userId,
+        });
+      },
+
+      clearBowpiAuth: () => {
+        set({
+          bowpiToken: undefined,
+          bowpiUserData: undefined,
+          sessionId: undefined,
+        });
+      },
+
+      setOfflineMode: (offline: boolean) => {
+        set({ isOfflineMode: offline });
+      },
+
+      setAuthenticated: (authenticated: boolean) => {
+        set({ isAuthenticated: authenticated });
+      },
+
+      setUser: (user: User | null) => {
+        set({ user });
       },
     }),
     {

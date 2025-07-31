@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,9 +10,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Typography, Button, TextInput, Icon } from '../components/atoms';
+import { NetworkStatusIndicator, AuthErrorDisplay } from '../components/molecules';
 import { useAuthStore } from '../stores/authStore';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
+import { useNetworkAwareAuth } from '../hooks/useNetworkAwareAuth';
+import { authIntegration } from '../services/AuthIntegrationService';
 
 export const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -21,8 +24,10 @@ export const LoginScreen: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [hasAttemptedLogin, setHasAttemptedLogin] = useState(false);
+  const [authError, setAuthError] = useState<any>(null);
 
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, isLoading, error, clearError, isOfflineMode } = useAuthStore();
+  const { networkStatus, canLogin, isInitialized } = useNetworkAwareAuth();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,11 +67,37 @@ export const LoginScreen: React.FC = () => {
       return;
     }
 
+    // Check network connectivity before attempting login
+    if (!networkStatus.isConnected) {
+      Alert.alert(
+        'Sin Conexión a Internet',
+        'Se requiere conexión a internet para iniciar sesión. Por favor verifica tu conexión y vuelve a intentar.',
+        [{ text: 'Entendido', style: 'default' }]
+      );
+      return;
+    }
+
+    // Check if login is possible with current network conditions
+    if (!canLogin) {
+      Alert.alert(
+        'Conexión Insuficiente',
+        'La calidad de tu conexión a internet no es suficiente para iniciar sesión. Por favor verifica tu conexión.',
+        [{ text: 'Entendido', style: 'default' }]
+      );
+      return;
+    }
+
     try {
+      setAuthError(null); // Clear previous auth errors
       await login(email, password);
     } catch (err) {
-      // Error is handled by the store
       console.error('Login error:', err);
+      
+      // Set the error for display in AuthErrorDisplay component
+      setAuthError(err);
+      
+      // Handle the error using the enhanced error handling system
+      await authIntegration.handleAuthError(err, 'login');
     }
   };
 
@@ -81,6 +112,8 @@ export const LoginScreen: React.FC = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -118,6 +151,21 @@ export const LoginScreen: React.FC = () => {
             </Typography>
           </View>
 
+          {/* Network Status Indicator */}
+          {isInitialized ? (
+            <NetworkStatusIndicator
+              isConnected={networkStatus.isConnected}
+              quality={networkStatus.quality}
+              style={styles.networkStatus}
+            />
+          ) : (
+            <View style={styles.networkStatus}>
+              <Typography variant="bodyS" color="secondary">
+                Verificando conexión...
+              </Typography>
+            </View>
+          )}
+
           <View style={styles.form}>
             <TextInput
               label="Correo electrónico"
@@ -151,7 +199,24 @@ export const LoginScreen: React.FC = () => {
               testID="password-input"
             />
 
-            {error && (
+            {/* Enhanced Error Display */}
+            {authError && (
+              <AuthErrorDisplay
+                error={authError}
+                onRetry={() => {
+                  setAuthError(null);
+                  handleLogin();
+                }}
+                onDismiss={() => {
+                  setAuthError(null);
+                  clearError();
+                }}
+                style={styles.errorDisplay}
+              />
+            )}
+
+            {/* Fallback for store errors */}
+            {error && !authError && (
               <View style={styles.errorContainer}>
                 <Typography variant="bodyS" color="error">
                   {error}
@@ -160,11 +225,20 @@ export const LoginScreen: React.FC = () => {
             )}
 
             <Button
-              title="Iniciar Sesión"
+              title={
+                !networkStatus.isConnected 
+                  ? "Sin Conexión" 
+                  : !canLogin 
+                    ? "Conexión Insuficiente"
+                    : "Iniciar Sesión"
+              }
               onPress={handleLogin}
               loading={isLoading}
-              disabled={isLoading}
-              style={styles.loginButton}
+              disabled={isLoading || !networkStatus.isConnected || !canLogin}
+              style={[
+                styles.loginButton,
+                (!networkStatus.isConnected || !canLogin) && styles.loginButtonDisabled
+              ]}
               testID="login-button"
             />
 
@@ -225,8 +299,16 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 
+  networkStatus: {
+    marginBottom: spacing.space16,
+  },
+
   form: {
     width: '100%',
+  },
+
+  errorDisplay: {
+    marginBottom: spacing.space16,
   },
 
   errorContainer: {
@@ -240,6 +322,10 @@ const styles = StyleSheet.create({
 
   loginButton: {
     marginBottom: spacing.space24,
+  },
+
+  loginButtonDisabled: {
+    opacity: 0.6,
   },
 
   forgotPasswordButton: {
