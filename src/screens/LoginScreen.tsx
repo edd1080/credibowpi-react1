@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Typography, Button, TextInput, Icon } from '../components/atoms';
@@ -26,7 +27,7 @@ export const LoginScreen: React.FC = () => {
   const [hasAttemptedLogin, setHasAttemptedLogin] = useState(false);
   const [authError, setAuthError] = useState<any>(null);
 
-  const { login, isLoading, error, clearError, isOfflineMode } = useAuthStore();
+  const { login, isLoading, error, clearError } = useAuthStore();
   const { networkStatus, canLogin, isInitialized } = useNetworkAwareAuth();
 
   const validateEmail = (email: string): boolean => {
@@ -126,11 +127,13 @@ export const LoginScreen: React.FC = () => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            {/* Logo placeholder */}
+            {/* Bowpi Logo */}
             <View style={styles.logoContainer}>
-              <Typography variant="h1" color="primary" weight="bold">
-                CB
-              </Typography>
+              <Image
+                source={require('../../assets/bowpi-logo.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </View>
 
             <Typography
@@ -237,7 +240,7 @@ export const LoginScreen: React.FC = () => {
               disabled={isLoading || !networkStatus.isConnected || !canLogin}
               style={[
                 styles.loginButton,
-                (!networkStatus.isConnected || !canLogin) && styles.loginButtonDisabled
+                (!networkStatus.isConnected || !canLogin) ? styles.loginButtonDisabled : null
               ]}
               testID="login-button"
             />
@@ -281,13 +284,14 @@ const styles = StyleSheet.create({
   },
 
   logoContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.primary.deepBlue,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.space12,
+    width: 120,
+    height: 80,
+    marginBottom: spacing.space16,
+  },
+
+  logoImage: {
+    width: '100%',
+    height: '100%',
   },
 
   title: {

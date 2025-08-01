@@ -33,11 +33,14 @@
     "test:performance": "jest src/__tests__/security-performance/AuthPerformance.test.ts",
     "test:load": "jest src/__tests__/security-performance/LoadTesting.test.ts",
     "test:security-performance": "jest --config=src/__tests__/security-performance/jest.config.js --coverage",
+    "test:deployment": "node scripts/verify-deployment.js",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "deploy:production": "./scripts/deploy-production.sh",
+    "verify:deployment": "npm run test:deployment && npm run type-check && npm run lint"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.1",

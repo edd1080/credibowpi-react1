@@ -14,6 +14,8 @@ import { securityLogger, SecurityEventType, SecurityEventSeverity } from './Secu
 import { suspiciousActivityMonitor } from './SuspiciousActivityMonitor';
 import { bowpiErrorManager } from './BowpiErrorManager';
 import { errorRecoveryService } from './ErrorRecoveryService';
+import { authMigrationService } from './AuthMigrationService';
+import { featureFlagService } from './FeatureFlagService';
 
 /**
  * Service that integrates Bowpi authentication with the existing app structure
@@ -75,6 +77,12 @@ export class AuthIntegrationService {
         );
 
         console.log('✅ [AUTH_INTEGRATION] Auth store updated successfully');
+
+        // Clean up legacy data after successful Bowpi authentication
+        // This is done asynchronously to not delay the login process
+        this.cleanupLegacyDataAfterBowpiAuth().catch(error => {
+          console.error('❌ [AUTH_INTEGRATION] Legacy cleanup failed (non-blocking):', error);
+        });
 
       } else {
         console.error('❌ [AUTH_INTEGRATION] Bowpi login failed after retries:', retryResult.error);
@@ -259,14 +267,48 @@ export class AuthIntegrationService {
   }
 
   /**
-   * Initialize Bowpi authentication system
+   * Initialize Bowpi authentication system with migration support
    */
   static async initializeBowpiAuth(): Promise<void> {
-    console.log('🔍 [AUTH_INTEGRATION] Initializing Bowpi authentication');
+    console.log('🔍 [AUTH_INTEGRATION] Initializing Bowpi authentication with migration support');
 
     try {
+      // Initialize feature flags first
+      await featureFlagService.initialize();
+      console.log('✅ [AUTH_INTEGRATION] Feature flags initialized');
+
       // Initialize the Bowpi auth service
       await bowpiAuthService.initialize();
+      console.log('✅ [AUTH_INTEGRATION] Bowpi auth service initialized');
+
+      // Perform migration if needed and enabled
+      if (featureFlagService.isAutoMigrationEnabled()) {
+        console.log('🔍 [AUTH_INTEGRATION] Auto-migration enabled, checking for migration needs');
+        
+        const migrationResult = await authMigrationService.initialize();
+        if (migrationResult) {
+          console.log('🔍 [AUTH_INTEGRATION] Migration performed:', {
+            success: migrationResult.success,
+            migrated: migrationResult.migrated,
+            reason: migrationResult.reason
+          });
+
+          // Log migration result
+          await securityLogger.logSecurityEvent(
+            SecurityEventType.SESSION_MIGRATION,
+            migrationResult.success ? SecurityEventSeverity.INFO : SecurityEventSeverity.WARNING,
+            'Authentication migration completed during initialization',
+            {
+              success: migrationResult.success,
+              migrated: migrationResult.migrated,
+              reason: migrationResult.reason,
+              actions: migrationResult.actions
+            }
+          );
+        }
+      } else {
+        console.log('🔍 [AUTH_INTEGRATION] Auto-migration disabled');
+      }
       
       // Check current auth status
       await this.checkBowpiAuthStatus();
@@ -475,6 +517,130 @@ export class AuthIntegrationService {
   }
 
   /**
+   * Perform manual migration from legacy authentication
+   */
+  static async performManualMigration(): Promise<{
+    success: boolean;
+    message: string;
+    migrationResult?: any;
+  }> {
+    console.log('🔍 [AUTH_INTEGRATION] Performing manual migration');
+
+    try {
+      // Check if migration is allowed
+      if (!featureFlagService.isAutoMigrationEnabled()) {
+        return {
+          success: false,
+          message: 'Migration is currently disabled by feature flags'
+        };
+      }
+
+      // Perform migration
+      const migrationResult = await authMigrationService.performMigration();
+
+      if (migrationResult.success && migrationResult.migrated) {
+        // Update auth status after successful migration
+        await this.checkBowpiAuthStatus();
+        
+        return {
+          success: true,
+          message: 'Migration completed successfully',
+          migrationResult
+        };
+      } else {
+        return {
+          success: false,
+          message: migrationResult.reason,
+          migrationResult
+        };
+      }
+
+    } catch (error) {
+      console.error('❌ [AUTH_INTEGRATION] Manual migration failed:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Unknown migration error'
+      };
+    }
+  }
+
+  /**
+   * Check if user needs to re-authenticate with Bowpi after migration
+   */
+  static async checkMigrationReauthRequired(): Promise<{
+    required: boolean;
+    reason: string;
+    isMigratedSession: boolean;
+  }> {
+    try {
+      return await authMigrationService.requiresBowpiReauth();
+    } catch (error) {
+      console.error('❌ [AUTH_INTEGRATION] Error checking migration reauth requirement:', error);
+      return {
+        required: true,
+        reason: 'Error checking session status',
+        isMigratedSession: false
+      };
+    }
+  }
+
+  /**
+   * Clean up legacy data after successful Bowpi authentication
+   */
+  static async cleanupLegacyDataAfterBowpiAuth(): Promise<void> {
+    console.log('🔍 [AUTH_INTEGRATION] Cleaning up legacy data after Bowpi auth');
+
+    try {
+      // Only cleanup if feature flag allows it
+      if (featureFlagService.isLegacyCleanupEnabled()) {
+        await authMigrationService.cleanupLegacyData();
+        console.log('✅ [AUTH_INTEGRATION] Legacy data cleanup completed');
+      } else {
+        console.log('🔍 [AUTH_INTEGRATION] Legacy cleanup disabled by feature flags');
+      }
+    } catch (error) {
+      console.error('❌ [AUTH_INTEGRATION] Error cleaning up legacy data:', error);
+      // Don't throw - cleanup failure shouldn't affect authentication
+    }
+  }
+
+  /**
+   * Get migration status and statistics
+   */
+  static async getMigrationStatus() {
+    try {
+      const [migrationStatus, featureFlags] = await Promise.all([
+        authMigrationService.getMigrationStatus(),
+        featureFlagService.getSafeFlags()
+      ]);
+
+      return {
+        migration: migrationStatus,
+        featureFlags,
+        rolloutStats: featureFlagService.getRolloutStats()
+      };
+    } catch (error) {
+      console.error('❌ [AUTH_INTEGRATION] Error getting migration status:', error);
+      return {
+        migration: {
+          migrationCompleted: false,
+          cleanupCompleted: false,
+          hasLegacyData: false,
+          hasBowpiData: false,
+          requiresReauth: true
+        },
+        featureFlags: {},
+        rolloutStats: {
+          totalUsers: 0,
+          usersInRollout: 0,
+          rolloutPercentage: 0,
+          actualRolloutPercentage: 0
+        }
+      };
+    }
+  }
+
+  /**
    * Get debug information about the authentication system
    */
   static async getDebugInfo() {
@@ -498,7 +664,9 @@ export class AuthIntegrationService {
       activityMonitoring: {
         stats: activityStats,
         riskSummary
-      }
+      },
+      migration: await this.getMigrationStatus(),
+      featureFlags: featureFlagService.getDebugInfo()
     };
   }
 

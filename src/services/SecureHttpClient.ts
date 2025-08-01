@@ -11,6 +11,8 @@ import {
 } from '../types/bowpi';
 import { BowpiAuthenticationInterceptor } from './bowpi/BowpiAuthenticationInterceptor';
 import { BowpiAuthAdapter } from './bowpi/BowpiAuthAdapter';
+import { config } from '../constants/config';
+import { productionLogger, LogCategory, LogLevel } from './ProductionLoggingService';
 
 /**
  * Environment configuration for HTTP client
@@ -38,25 +40,30 @@ export class SecureHttpClient {
   private interceptor: BowpiAuthenticationInterceptor;
   private requestIdCounter = 0;
 
-  constructor(config?: Partial<HttpClientConfig>) {
+  constructor(clientConfig?: Partial<HttpClientConfig>) {
     this.config = {
       isDevelopment: __DEV__ ?? false,
-      allowHttp: __DEV__ ?? false,
-      enableDebugLogs: __DEV__ ?? false,
-      timeout: 30000, // 30 seconds
-      ...config
+      allowHttp: !config.security.enforceHttps,
+      enableDebugLogs: config.logging.enableDebugLogs,
+      timeout: config.security.requestTimeout,
+      ...clientConfig
     };
 
     // Initialize interceptor with auth adapter
     const authAdapter = new BowpiAuthAdapter();
     this.interceptor = new BowpiAuthenticationInterceptor(authAdapter);
 
-    console.log('🔍 [SECURE_HTTP_CLIENT] Initialized with config:', {
-      isDevelopment: this.config.isDevelopment,
-      allowHttp: this.config.allowHttp,
-      enableDebugLogs: this.config.enableDebugLogs,
-      timeout: this.config.timeout
-    });
+    productionLogger.info(
+      LogCategory.SYSTEM,
+      'Secure HTTP client initialized',
+      {
+        isDevelopment: this.config.isDevelopment,
+        allowHttp: this.config.allowHttp,
+        enableDebugLogs: this.config.enableDebugLogs,
+        timeout: this.config.timeout,
+        enforceHttps: config.security.enforceHttps,
+      }
+    );
   }
 
   /**
@@ -79,13 +86,15 @@ export class SecureHttpClient {
       }
     };
 
-    if (this.config.enableDebugLogs) {
-      console.log('🔍 [SECURE_HTTP_CLIENT] Request started:', {
+    productionLogger.debug(
+      LogCategory.NETWORK,
+      'HTTP request started',
+      {
         requestId,
         method: config.method,
         url: this.sanitizeUrlForLogging(config.url)
-      });
-    }
+      }
+    );
 
     try {
       // Step 1: Validate domain
@@ -106,29 +115,44 @@ export class SecureHttpClient {
       // Step 6: Parse and validate response
       const parsedResponse = this.parseResponse<T>(finalResponse);
 
-      if (this.config.enableDebugLogs) {
-        const duration = Date.now() - startTime;
-        console.log('✅ [SECURE_HTTP_CLIENT] Request completed:', {
-          requestId,
-          duration: `${duration}ms`,
+      const duration = Date.now() - startTime;
+      
+      productionLogger.logNetworkEvent(
+        LogLevel.INFO,
+        'http_request_completed',
+        'HTTP request completed successfully',
+        {
+          success: parsedResponse.success,
           status: finalResponse.status,
-          success: parsedResponse.success
-        });
-      }
+        },
+        {
+          requestId,
+          duration,
+          statusCode: finalResponse.status,
+          url: config.url,
+          method: config.method,
+        }
+      );
 
       return parsedResponse;
 
     } catch (error) {
       const duration = Date.now() - startTime;
       
-      if (this.config.enableDebugLogs) {
-        console.error('❌ [SECURE_HTTP_CLIENT] Request failed:', {
-          requestId,
-          duration: `${duration}ms`,
+      productionLogger.logNetworkEvent(
+        LogLevel.ERROR,
+        'http_request_failed',
+        'HTTP request failed',
+        {
           error: error instanceof Error ? error.message : 'Unknown error',
-          url: this.sanitizeUrlForLogging(config.url)
-        });
-      }
+        },
+        {
+          requestId,
+          duration,
+          url: config.url,
+          method: config.method,
+        }
+      );
 
       // Convert to BowpiAuthError if needed
       if (error instanceof BowpiAuthError) {

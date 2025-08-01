@@ -18,6 +18,8 @@ import { suspiciousActivityMonitor } from './SuspiciousActivityMonitor';
 import { bowpiErrorManager } from './BowpiErrorManager';
 import { errorRecoveryService } from './ErrorRecoveryService';
 import { sessionRecoveryService } from './SessionRecoveryService';
+import { authAnalytics, AuthEventType, AuthFailureReason } from './AuthenticationAnalyticsService';
+import { productionLogger, LogCategory, LogLevel } from './ProductionLoggingService';
 
 /**
  * Main Bowpi Authentication Service
@@ -79,19 +81,43 @@ export class BowpiAuthService {
    * @returns Login result with success status and user data
    */
   async login(email: string, password: string): Promise<LoginResult> {
-    console.log('🔍 [BOWPI_AUTH_SERVICE] Login attempt started for:', email);
+    const startTime = Date.now();
+    
+    productionLogger.logAuthEvent(
+      LogLevel.INFO,
+      'login_attempt',
+      'Login attempt started',
+      { email: email.replace(/(.{2}).*(@.*)/, '$1***$2') } // Partially mask email
+    );
 
     try {
       // Validate network connectivity first
       await this.validateNetworkForLogin();
 
-      console.log('🔍 [BOWPI_AUTH_SERVICE] Network validation passed, proceeding with login...');
+      productionLogger.debug(
+        LogCategory.AUTHENTICATION,
+        'Network validation passed, proceeding with login'
+      );
 
       // Perform login using Bowpi adapter
       const loginResponse = await this.authAdapter.login(email, password);
 
       if (loginResponse.success && loginResponse.data) {
-        console.log('✅ [BOWPI_AUTH_SERVICE] Login successful');
+        const duration = Date.now() - startTime;
+        
+        productionLogger.logAuthEvent(
+          LogLevel.INFO,
+          'login_success',
+          'Login completed successfully',
+          undefined,
+          { duration, success: true }
+        );
+
+        // Record successful login in analytics
+        authAnalytics.recordLoginAttempt(true, duration, undefined, {
+          networkType: this.networkStatus.type,
+          networkQuality: NetworkAwareService.getNetworkQuality(),
+        });
 
         // Get decrypted user data
         const userData = await this.authAdapter.getCurrentUser();
@@ -108,7 +134,11 @@ export class BowpiAuthService {
             profile: userData.userProfile
           });
 
-          console.log('✅ [BOWPI_AUTH_SERVICE] Auth store updated with user data');
+          productionLogger.info(
+            LogCategory.AUTHENTICATION,
+            'Auth store updated with user data',
+            { userId: userData.userId }
+          );
 
           return {
             success: true,
@@ -129,19 +159,56 @@ export class BowpiAuthService {
       }
 
     } catch (error) {
-      console.error('❌ [BOWPI_AUTH_SERVICE] Login failed:', error);
-
+      const duration = Date.now() - startTime;
+      
       let authError: BowpiAuthError;
+      let failureReason: AuthFailureReason;
 
       if (error instanceof BowpiAuthError) {
         authError = error;
+        // Map BowpiAuthErrorType to AuthFailureReason
+        switch (error.type) {
+          case BowpiAuthErrorType.INVALID_CREDENTIALS:
+            failureReason = AuthFailureReason.INVALID_CREDENTIALS;
+            break;
+          case BowpiAuthErrorType.NETWORK_ERROR:
+            failureReason = AuthFailureReason.NETWORK_ERROR;
+            break;
+          case BowpiAuthErrorType.SERVER_ERROR:
+            failureReason = AuthFailureReason.SERVER_ERROR;
+            break;
+          case BowpiAuthErrorType.DECRYPTION_ERROR:
+            failureReason = AuthFailureReason.DECRYPTION_ERROR;
+            break;
+          case BowpiAuthErrorType.OFFLINE_LOGIN_ATTEMPT:
+            failureReason = AuthFailureReason.OFFLINE_ATTEMPT;
+            break;
+          default:
+            failureReason = AuthFailureReason.UNKNOWN;
+        }
       } else {
         authError = new BowpiAuthError(
           BowpiAuthErrorType.SERVER_ERROR,
           'Login failed due to server error',
           error as Error
         );
+        failureReason = AuthFailureReason.SERVER_ERROR;
       }
+
+      // Log authentication failure
+      productionLogger.logAuthEvent(
+        LogLevel.ERROR,
+        'login_failure',
+        'Login attempt failed',
+        { failureReason },
+        { duration, success: false, error: authError }
+      );
+
+      // Record failed login in analytics
+      authAnalytics.recordLoginAttempt(false, duration, failureReason, {
+        networkType: this.networkStatus.type,
+        networkQuality: NetworkAwareService.getNetworkQuality(),
+      });
 
       return {
         success: false,
