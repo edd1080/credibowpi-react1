@@ -198,7 +198,7 @@ describe('Authentication E2E Tests', () => {
 
       // Verify user data was stored securely
       expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(
-        '@bowpi_session_data',
+        'bowpi_session_data',
         expect.any(String)
       );
     });
@@ -294,7 +294,7 @@ describe('Authentication E2E Tests', () => {
     it('should allow app usage with valid token when offline', async () => {
       // First, simulate successful login while online
       mockAsyncStorage.getItem.mockImplementation((key) => {
-        if (key === '@bowpi_session_data') {
+        if (key === 'bowpi_session_data') {
           return Promise.resolve(JSON.stringify({
             decryptedToken: MOCK_USER_DATA,
             lastRenewalDate: Date.now(),
@@ -304,7 +304,7 @@ describe('Authentication E2E Tests', () => {
             expirationTime: Date.now() + 3600000 // 1 hour from now
           }));
         }
-        if (key === '@bowpi_encrypted_token') {
+        if (key === 'bowpi_encrypted_token') {
           return Promise.resolve(MOCK_JWT_TOKEN);
         }
         return Promise.resolve(null);
@@ -483,7 +483,7 @@ describe('Authentication E2E Tests', () => {
     it('should restore session on app startup', async () => {
       // Mock stored session data
       mockAsyncStorage.getItem.mockImplementation((key) => {
-        if (key === '@bowpi_session_data') {
+        if (key === 'bowpi_session_data') {
           return Promise.resolve(JSON.stringify({
             decryptedToken: MOCK_USER_DATA,
             lastRenewalDate: Date.now(),
@@ -493,7 +493,7 @@ describe('Authentication E2E Tests', () => {
             expirationTime: Date.now() + 3600000
           }));
         }
-        if (key === '@bowpi_encrypted_token') {
+        if (key === 'bowpi_encrypted_token') {
           return Promise.resolve(MOCK_JWT_TOKEN);
         }
         return Promise.resolve(null);
@@ -518,7 +518,7 @@ describe('Authentication E2E Tests', () => {
     it('should handle corrupted session data gracefully', async () => {
       // Mock corrupted session data
       mockAsyncStorage.getItem.mockImplementation((key) => {
-        if (key === '@bowpi_session_data') {
+        if (key === 'bowpi_session_data') {
           return Promise.resolve('corrupted_data');
         }
         return Promise.resolve(null);
@@ -532,7 +532,7 @@ describe('Authentication E2E Tests', () => {
       expect(isAuthenticated).toBe(false);
 
       // Verify corrupted data was cleaned up
-      expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith('@bowpi_session_data');
+      expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith('bowpi_session_data');
     });
 
     it('should invalidate session on server during logout', async () => {

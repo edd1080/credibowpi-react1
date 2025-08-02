@@ -93,10 +93,10 @@ export const LoginScreen: React.FC = () => {
       await login(email, password);
     } catch (err) {
       console.error('Login error:', err);
-      
+
       // Set the error for display in AuthErrorDisplay component
       setAuthError(err);
-      
+
       // Handle the error using the enhanced error handling system
       await authIntegration.handleAuthError(err, 'login');
     }
@@ -229,9 +229,9 @@ export const LoginScreen: React.FC = () => {
 
             <Button
               title={
-                !networkStatus.isConnected 
-                  ? "Sin Conexión" 
-                  : !canLogin 
+                !networkStatus.isConnected
+                  ? "Sin Conexión"
+                  : !canLogin
                     ? "Conexión Insuficiente"
                     : "Iniciar Sesión"
               }

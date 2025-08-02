@@ -1,7 +1,8 @@
 // Authentication Integration Service - Connects Bowpi auth with existing app structure
 
 import { bowpiAuthService } from './BowpiAuthService';
-import { useAuthStore } from '../stores/authStore';
+import { authStoreManager } from './AuthStoreManager';
+import { User } from '../types/auth-shared';
 import { 
   BowpiAuthError, 
   BowpiAuthErrorType, 
@@ -34,12 +35,10 @@ export class AuthIntegrationService {
   static async loginWithBowpi(email: string, password: string): Promise<void> {
     console.log('🔍 [AUTH_INTEGRATION] Starting Bowpi login for:', email);
 
-    const authStore = useAuthStore.getState();
-    
     try {
-      // Set loading state
-      authStore.setLoading(true);
-      authStore.clearError();
+      // Set loading state using store manager
+      authStoreManager.setLoading(true);
+      authStoreManager.clearError();
 
       // Log login attempt start
       await securityLogger.logSecurityEvent(
@@ -60,11 +59,9 @@ export class AuthIntegrationService {
         // Convert Bowpi user data to app User format
         const appUser = this.convertBowpiUserToAppUser(retryResult.result.userData);
 
-        // Update auth store with successful login
-        authStore.setUser(appUser);
-        authStore.setAuthenticated(true);
-        authStore.setLoading(false);
-        authStore.clearError();
+        // Update auth store with successful login using store manager
+        authStoreManager.updateAuthState(appUser);
+        authStoreManager.setLoading(false);
 
         // Log successful login
         await suspiciousActivityMonitor.recordLoginAttempt(
@@ -98,10 +95,10 @@ export class AuthIntegrationService {
           }
         );
         
-        // Handle login failure with enhanced error handling
-        authStore.setLoading(false);
-        authStore.setAuthenticated(false);
-        authStore.setUser(null);
+        // Handle login failure with enhanced error handling using store manager
+        authStoreManager.setLoading(false);
+        authStoreManager.setAuthenticated(false);
+        authStoreManager.setUser(null);
         
         // Use enhanced error handling
         const errorHandlingResult = await AuthErrorHandlingService.handleError(
@@ -114,7 +111,7 @@ export class AuthIntegrationService {
         );
         
         const errorMessage = this.getErrorMessage(retryResult.error);
-        authStore.clearError();
+        authStoreManager.clearError();
         
         throw new Error(errorMessage);
       }
@@ -122,10 +119,10 @@ export class AuthIntegrationService {
     } catch (error) {
       console.error('❌ [AUTH_INTEGRATION] Login error:', error);
       
-      // Update store with error state
-      authStore.setLoading(false);
-      authStore.setAuthenticated(false);
-      authStore.setUser(null);
+      // Update store with error state using store manager
+      authStoreManager.setLoading(false);
+      authStoreManager.setAuthenticated(false);
+      authStoreManager.setUser(null);
       
       // Re-throw error for UI handling
       throw error;
@@ -138,27 +135,22 @@ export class AuthIntegrationService {
   static async logoutWithBowpi(): Promise<void> {
     console.log('🔍 [AUTH_INTEGRATION] Starting Bowpi logout');
 
-    const authStore = useAuthStore.getState();
-
     try {
-      // Set loading state
-      authStore.setLoading(true);
+      // Set loading state using store manager
+      authStoreManager.setLoading(true);
 
       // Get user info before logout for logging
-      const currentUser = authStore.user;
-      const sessionId = authStore.sessionId;
+      const currentState = authStoreManager.getState();
+      const currentUser = currentState.user;
+      const sessionId = currentState.sessionId;
 
       // Perform Bowpi logout with retry mechanism
       const retryResult = await AuthRetryService.executeLogoutWithRetry(async () => {
         await bowpiAuthService.logout();
       });
 
-      // Clear auth store regardless of server logout success
-      authStore.setUser(null);
-      authStore.setAuthenticated(false);
-      authStore.clearBowpiAuth();
-      authStore.setLoading(false);
-      authStore.clearError();
+      // Clear auth store regardless of server logout success using store manager
+      authStoreManager.clearAuthState();
 
       // Log logout event
       await securityLogger.logSecurityEvent(
@@ -193,11 +185,8 @@ export class AuthIntegrationService {
     } catch (error) {
       console.error('❌ [AUTH_INTEGRATION] Logout error:', error);
       
-      // Even if logout fails, clear local state
-      authStore.setUser(null);
-      authStore.setAuthenticated(false);
-      authStore.clearBowpiAuth();
-      authStore.setLoading(false);
+      // Even if logout fails, clear local state using store manager
+      authStoreManager.clearAuthState();
       
       // Handle error silently for logout
       await AuthErrorHandlingService.handleError(
@@ -219,8 +208,6 @@ export class AuthIntegrationService {
   static async checkBowpiAuthStatus(): Promise<void> {
     console.log('🔍 [AUTH_INTEGRATION] Checking Bowpi auth status');
 
-    const authStore = useAuthStore.getState();
-
     try {
       // Check if user is authenticated via Bowpi
       const isAuthenticated = await bowpiAuthService.isAuthenticated();
@@ -232,26 +219,20 @@ export class AuthIntegrationService {
         const userData = await bowpiAuthService.getCurrentUser();
         
         if (userData) {
-          // Convert and update store
+          // Convert and update store using store manager
           const appUser = this.convertBowpiUserToAppUser(userData);
-          
-          authStore.setUser(appUser);
-          authStore.setAuthenticated(true);
+          authStoreManager.updateAuthState(appUser);
           
           console.log('✅ [AUTH_INTEGRATION] Auth status updated - user is authenticated');
         } else {
-          // Authenticated but no user data - clear auth
-          authStore.setUser(null);
-          authStore.setAuthenticated(false);
-          authStore.clearBowpiAuth();
+          // Authenticated but no user data - clear auth using store manager
+          authStoreManager.clearAuthState();
           
           console.log('⚠️ [AUTH_INTEGRATION] Authenticated but no user data - cleared auth');
         }
       } else {
-        // Not authenticated - clear store
-        authStore.setUser(null);
-        authStore.setAuthenticated(false);
-        authStore.clearBowpiAuth();
+        // Not authenticated - clear store using store manager
+        authStoreManager.clearAuthState();
         
         console.log('🔍 [AUTH_INTEGRATION] User not authenticated');
       }
@@ -259,10 +240,8 @@ export class AuthIntegrationService {
     } catch (error) {
       console.error('❌ [AUTH_INTEGRATION] Error checking auth status:', error);
       
-      // On error, assume not authenticated
-      authStore.setUser(null);
-      authStore.setAuthenticated(false);
-      authStore.clearBowpiAuth();
+      // On error, assume not authenticated using store manager
+      authStoreManager.clearAuthState();
     }
   }
 
@@ -644,7 +623,7 @@ export class AuthIntegrationService {
    * Get debug information about the authentication system
    */
   static async getDebugInfo() {
-    const authStore = useAuthStore.getState();
+    const currentState = authStoreManager.getState();
     const loggingStats = await securityLogger.getLoggingStats();
     const activityStats = suspiciousActivityMonitor.getActivityStats();
     const riskSummary = suspiciousActivityMonitor.getRiskSummary();
@@ -652,11 +631,11 @@ export class AuthIntegrationService {
     return {
       bowpiService: await bowpiAuthService.getDebugInfo(),
       authStore: {
-        isAuthenticated: authStore.isAuthenticated,
-        hasUser: !!authStore.user,
-        hasBowpiToken: !!authStore.bowpiToken,
-        isOfflineMode: authStore.isOfflineMode,
-        sessionId: authStore.sessionId
+        isAuthenticated: currentState.isAuthenticated,
+        hasUser: !!currentState.user,
+        hasBowpiToken: !!currentState.bowpiToken,
+        isOfflineMode: currentState.isOfflineMode,
+        sessionId: currentState.sessionId
       },
       networkStatus: this.getNetworkStatus(),
       errorStats: this.getErrorStats(),

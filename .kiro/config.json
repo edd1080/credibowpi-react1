@@ -1,0 +1,30 @@
+{
+  "specs": {
+    "enabled": true,
+    "directory": "specs",
+    "features": [
+      {
+        "name": "credibowpi-mobile-app",
+        "title": "CrediBowpi Mobile App",
+        "description": "Aplicación móvil React Native para agentes de campo",
+        "status": "complete"
+      },
+      {
+        "name": "bowpi-authentication-system",
+        "title": "Bowpi Authentication System",
+        "description": "Sistema de autenticación seguro con microservicios Bowpi",
+        "status": "complete"
+      },
+      {
+        "name": "credit-application-form-system",
+        "title": "Credit Application Form System",
+        "description": "Sistema de formularios para solicitudes de crédito",
+        "status": "complete"
+      }
+    ]
+  },
+  "steering": {
+    "enabled": true,
+    "directory": "steering"
+  }
+}

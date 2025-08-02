@@ -4,12 +4,12 @@ import NetInfo from '@react-native-community/netinfo';
 import { HttpHeaders, InterceptorContext } from '../../http/types';
 import { BowpiAuthAdapter } from './BowpiAuthAdapter';
 import { RequestConfig, ResponseConfig } from '../types/bowpi';
-import { SecurityLogger } from '../../http/security/SecurityLogger';
+import { securityLogger } from '../src/services/SecurityLoggingService';
 
 export class BowpiAuthenticationInterceptor {
   
   private authAdapter: BowpiAuthAdapter;
-  private logger: SecurityLogger;
+  private logger: typeof securityLogger;
   private isRefreshing = false;
   private failedRequestsQueue: Array<{
     resolve: (value: any) => void;
@@ -18,7 +18,7 @@ export class BowpiAuthenticationInterceptor {
 
   constructor(authAdapter: BowpiAuthAdapter) {
     this.authAdapter = authAdapter;
-    this.logger = SecurityLogger.getInstance();
+    this.logger = securityLogger;
   }
 
   /**

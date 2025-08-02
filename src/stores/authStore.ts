@@ -92,79 +92,92 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
-  bowpiToken: undefined,
+  bowpiToken: '',
   bowpiUserData: undefined,
-  sessionId: undefined,
+  sessionId: '',
   isOfflineMode: false,
 };
 
-// Import Bowpi authentication integration
-import { authIntegration } from '../services/AuthIntegrationService';
+// Import auth store manager to break circular dependencies
+import { authStoreManager } from '../services/AuthStoreManager';
+import { AuthStoreInterface } from '../types/auth-shared';
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    set => ({
-      ...initialState,
+    (set, get) => {
+      const store: AuthStore = {
+        ...initialState,
 
-      login: async (email: string, password: string) => {
-        // Use Bowpi authentication integration
-        try {
-          await authIntegration.loginWithBowpi(email, password);
-        } catch (error) {
-          // Set error in store
+        login: async (email: string, password: string) => {
+          // Import here to avoid circular dependency
+          const { authIntegration } = await import('../services/AuthIntegrationService');
+          
+          try {
+            await authIntegration.loginWithBowpi(email, password);
+          } catch (error) {
+            // Set error in store
+            set({
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Error al iniciar sesión',
+            });
+            throw error;
+          }
+        },
+
+        logout: async () => {
+          // Import here to avoid circular dependency
+          const { authIntegration } = await import('../services/AuthIntegrationService');
+          await authIntegration.logoutWithBowpi();
+        },
+
+        clearError: () => set({ error: null }),
+
+        setLoading: (loading: boolean) => set({ isLoading: loading }),
+
+        checkAuthStatus: async () => {
+          // Import here to avoid circular dependency
+          const { authIntegration } = await import('../services/AuthIntegrationService');
+          await authIntegration.checkBowpiAuthStatus();
+        },
+
+        // Bowpi specific actions
+        setBowpiAuth: (token: string, userData: any) => {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : 'Error al iniciar sesión',
+            bowpiToken: token,
+            bowpiUserData: userData,
+            sessionId: userData.userProfile?.requestId || userData.userId,
           });
-          throw error;
-        }
-      },
+        },
 
-      logout: async () => {
-        // Use Bowpi authentication integration
-        await authIntegration.logoutWithBowpi();
-      },
+        clearBowpiAuth: () => {
+          set({
+            bowpiToken: '',
+            bowpiUserData: undefined,
+            sessionId: '',
+          });
+        },
 
-      clearError: () => set({ error: null }),
+        setOfflineMode: (offline: boolean) => {
+          set({ isOfflineMode: offline });
+        },
 
-      setLoading: (loading: boolean) => set({ isLoading: loading }),
+        setAuthenticated: (authenticated: boolean) => {
+          set({ isAuthenticated: authenticated });
+        },
 
-      checkAuthStatus: async () => {
-        // Use Bowpi authentication integration
-        await authIntegration.checkBowpiAuthStatus();
-      },
+        setUser: (user: User | null) => {
+          set({ user });
+        },
+      };
 
-      // Bowpi specific actions
-      setBowpiAuth: (token: string, userData: any) => {
-        set({
-          bowpiToken: token,
-          bowpiUserData: userData,
-          sessionId: userData.userProfile?.requestId || userData.userId,
-        });
-      },
+      // Initialize the auth store manager with this store instance
+      // This allows services to interact with the store without circular dependencies
+      authStoreManager.initialize(store as AuthStoreInterface);
 
-      clearBowpiAuth: () => {
-        set({
-          bowpiToken: undefined,
-          bowpiUserData: undefined,
-          sessionId: undefined,
-        });
-      },
-
-      setOfflineMode: (offline: boolean) => {
-        set({ isOfflineMode: offline });
-      },
-
-      setAuthenticated: (authenticated: boolean) => {
-        set({ isAuthenticated: authenticated });
-      },
-
-      setUser: (user: User | null) => {
-        set({ user });
-      },
-    }),
+      return store;
+    },
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => secureStorage),

@@ -577,9 +577,9 @@ describe('Final Integration Validation', () => {
     });
 
     it('should use correct storage keys', () => {
-      expect(BOWPI_STORAGE_KEYS.ENCRYPTED_TOKEN).toBe('@bowpi_encrypted_token');
-      expect(BOWPI_STORAGE_KEYS.SESSION_DATA).toBe('@bowpi_session_data');
-      expect(BOWPI_STORAGE_KEYS.SESSION_ID).toBe('@bowpi_session_id');
+      expect(BOWPI_STORAGE_KEYS.ENCRYPTED_TOKEN).toBe('bowpi_encrypted_token');
+      expect(BOWPI_STORAGE_KEYS.SESSION_DATA).toBe('bowpi_session_data');
+      expect(BOWPI_STORAGE_KEYS.SESSION_ID).toBe('bowpi_session_id');
     });
   });
 

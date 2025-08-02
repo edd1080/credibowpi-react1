@@ -9,7 +9,8 @@ import {
   LoginResult,
   NetworkStatus
 } from './bowpi';
-import { useAuthStore } from '../stores/authStore';
+import { authStoreManager } from './AuthStoreManager';
+import { User } from '../types/auth-shared';
 import LogoutAlertService from './LogoutAlertService';
 import NetworkAwareService from './NetworkAwareService';
 import { bowpiSecureStorage } from './BowpiSecureStorageService';
@@ -56,9 +57,8 @@ export class BowpiAuthService {
           quality: NetworkAwareService.getNetworkQuality()
         });
 
-        // Update auth store with network status
-        const authStore = useAuthStore.getState();
-        authStore.setOfflineMode(!status.isConnected);
+        // Update auth store with network status using store manager
+        authStoreManager.setOfflineMode(!status.isConnected);
 
         // Handle network restoration for pending operations
         if (status.isConnected) {
@@ -123,16 +123,16 @@ export class BowpiAuthService {
         const userData = await this.authAdapter.getCurrentUser();
         
         if (userData) {
-          // Update auth store with Bowpi authentication
-          const authStore = useAuthStore.getState();
-          authStore.setBowpiAuth(loginResponse.data, userData);
-          authStore.setAuthenticated(true);
-          authStore.setUser({
+          // Create user object for auth store
+          const user: User = {
             id: userData.userId,
             email: userData.email,
             name: userData.userProfile.names + ' ' + userData.userProfile.lastNames,
             profile: userData.userProfile
-          });
+          };
+
+          // Update auth store with Bowpi authentication using store manager
+          authStoreManager.updateAuthState(user, loginResponse.data, userData);
 
           productionLogger.info(
             LogCategory.AUTHENTICATION,
@@ -225,7 +225,6 @@ export class BowpiAuthService {
     console.log('🔍 [BOWPI_AUTH_SERVICE] Logout initiated');
 
     try {
-      const authStore = useAuthStore.getState();
 
       // Check network connectivity
       const isOnline = NetworkAwareService.isOnline();
@@ -275,21 +274,15 @@ export class BowpiAuthService {
       // Clear local session data
       await this.authAdapter.clearLocalSession();
       
-      // Clear auth store
-      const authStore = useAuthStore.getState();
-      authStore.clearBowpiAuth();
-      authStore.setAuthenticated(false);
-      authStore.setUser(null);
+      // Clear auth store using store manager
+      authStoreManager.clearAuthState();
       
       console.log('✅ [BOWPI_AUTH_SERVICE] Offline logout completed successfully');
       
     } catch (error) {
       console.error('❌ [BOWPI_AUTH_SERVICE] Error during offline logout:', error);
       // Even if local cleanup fails, ensure auth store is cleared
-      const authStore = useAuthStore.getState();
-      authStore.clearBowpiAuth();
-      authStore.setAuthenticated(false);
-      authStore.setUser(null);
+      authStoreManager.clearAuthState();
     }
   }
 
@@ -303,11 +296,8 @@ export class BowpiAuthService {
       // Perform logout using Bowpi adapter (includes server invalidation)
       await this.authAdapter.logout();
 
-      // Clear auth store
-      const authStore = useAuthStore.getState();
-      authStore.clearBowpiAuth();
-      authStore.setAuthenticated(false);
-      authStore.setUser(null);
+      // Clear auth store using store manager
+      authStoreManager.clearAuthState();
 
       console.log('✅ [BOWPI_AUTH_SERVICE] Online logout completed successfully');
       
@@ -377,21 +367,22 @@ export class BowpiAuthService {
       
       console.log('🔍 [BOWPI_AUTH_SERVICE] Authentication status:', isAuth);
       
-      // Update auth store if needed
-      const authStore = useAuthStore.getState();
-      if (authStore.isAuthenticated !== isAuth) {
-        authStore.setAuthenticated(isAuth);
+      // Update auth store if needed using store manager
+      const currentState = authStoreManager.getState();
+      if (currentState.isAuthenticated !== isAuth) {
+        authStoreManager.setAuthenticated(isAuth);
         
         if (isAuth) {
           // Load user data if authenticated but not in store
           const userData = await this.authAdapter.getCurrentUser();
-          if (userData && !authStore.user) {
-            authStore.setUser({
+          if (userData && !currentState.user) {
+            const user: User = {
               id: userData.userId,
               email: userData.email,
               name: userData.userProfile.names + ' ' + userData.userProfile.lastNames,
               profile: userData.userProfile
-            });
+            };
+            authStoreManager.setUser(user);
           }
         }
       }
@@ -711,15 +702,14 @@ export class BowpiAuthService {
         if (NetworkAwareService.isOnline()) {
           const userData = await this.getCurrentUser();
           if (userData) {
-            // Update auth store with restored session
-            const authStore = useAuthStore.getState();
-            authStore.setAuthenticated(true);
-            authStore.setUser({
+            // Update auth store with restored session using store manager
+            const user: User = {
               id: userData.userId,
               email: userData.email,
               name: userData.userProfile.names + ' ' + userData.userProfile.lastNames,
               profile: userData.userProfile
-            });
+            };
+            authStoreManager.updateAuthState(user);
             
             console.log('✅ [BOWPI_AUTH_SERVICE] Auth store updated with restored session');
           }

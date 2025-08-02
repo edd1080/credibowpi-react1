@@ -32,8 +32,8 @@ export interface UserRolloutInfo {
   assignedAt: number;
 }
 
-const FEATURE_FLAGS_STORAGE_KEY = '@credibowpi_feature_flags';
-const USER_ROLLOUT_STORAGE_KEY = '@credibowpi_user_rollout';
+const FEATURE_FLAGS_STORAGE_KEY = 'credibowpi_feature_flags';
+const USER_ROLLOUT_STORAGE_KEY = 'credibowpi_user_rollout';
 
 /**
  * Service to manage feature flags for gradual Bowpi authentication rollout

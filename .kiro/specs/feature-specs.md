@@ -15,9 +15,6 @@ Este documento centraliza todas las especificaciones de features para la aplicac
 - `requirements.md` - Requisitos funcionales y no funcionales
 - `design.md` - Arquitectura y diseño técnico
 - `tasks.md` - Plan de implementación y tareas
-- `prd.md` - Product Requirements Document
-- `tech-stack.md` - Stack tecnológico y dependencias
-- `arquitechture-app.md` - Arquitectura de la aplicación
 
 **Description**: Aplicación móvil React Native para agentes de campo que gestionan solicitudes de crédito con capacidades offline-first.
 
@@ -27,6 +24,44 @@ Este documento centraliza todas las especificaciones de features para la aplicac
 - Captura y gestión de documentos KYC
 - Autenticación biométrica y seguridad
 - Sincronización automática en background
+
+### 🔐 Bowpi Authentication System
+**Location**: `.kiro/specs/bowpi-authentication-system/`
+
+**Status**: ✅ Complete Specification
+
+**Documents**:
+- `requirements.md` - Requisitos del sistema de autenticación Bowpi
+- `design.md` - Arquitectura y diseño técnico del sistema
+- `tasks.md` - Plan de implementación y tareas
+
+**Description**: Sistema de autenticación seguro que integra microservicios Bowpi con capacidades offline-first y estándares OWASP.
+
+**Key Features**:
+- Cliente HTTP seguro con validación de dominios
+- Autenticación con tokens JWT y OTP
+- Gestión de sesiones offline
+- Interceptores de seguridad HMAC
+- Manejo de errores y recuperación
+
+### 📋 Credit Application Form System
+**Location**: `.kiro/specs/credit-application-form-system/`
+
+**Status**: ✅ Complete Specification
+
+**Documents**:
+- `requirements.md` - Requisitos del sistema de formularios de crédito
+- `design.md` - Arquitectura y diseño técnico del sistema
+- `tasks.md` - Plan de implementación y tareas
+
+**Description**: Sistema completo de formularios para solicitudes de crédito con navegación libre, auto-guardado y validaciones en tiempo real.
+
+**Key Features**:
+- Formularios modulares de 6 etapas
+- Navegación libre entre secciones
+- Auto-guardado en tiempo real
+- Validaciones dinámicas
+- Gestión de fiadores y documentos
 
 ## Spec Development Process
 

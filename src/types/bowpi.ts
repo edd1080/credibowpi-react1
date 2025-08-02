@@ -330,11 +330,11 @@ export const ALLOWED_DOMAINS = [
  * AsyncStorage Keys for Bowpi Data
  */
 export const BOWPI_STORAGE_KEYS = {
-  ENCRYPTED_TOKEN: '@bowpi_encrypted_token',
-  SESSION_DATA: '@bowpi_session_data',
-  SESSION_ID: '@bowpi_session_id',
-  OFFLINE_QUEUE: '@bowpi_offline_queue',
-  USER_PROFILE: '@bowpi_user_profile'
+  ENCRYPTED_TOKEN: 'bowpi_encrypted_token',
+  SESSION_DATA: 'bowpi_session_data',
+  SESSION_ID: 'bowpi_session_id',
+  OFFLINE_QUEUE: 'bowpi_offline_queue',
+  USER_PROFILE: 'bowpi_user_profile'
 } as const;
 
 // ============================================================================
