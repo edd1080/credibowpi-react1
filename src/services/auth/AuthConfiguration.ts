@@ -2,10 +2,10 @@
 // Handles loading, validation, and persistence of authentication settings
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  AuthConfiguration, 
-  AuthType, 
-  LegacyAuthConfig, 
+import {
+  AuthConfiguration,
+  AuthType,
+  LegacyAuthConfig,
   BowpiAuthConfig,
   DEFAULT_AUTH_CONFIG,
   DEFAULT_LEGACY_CONFIG,
@@ -49,7 +49,7 @@ export class AuthConfigurationService {
       const envConfig = this.loadEnvironmentConfig();
       const storedConfig = await this.loadStoredConfig();
       const userPrefsConfig = await this.loadUserPreferences();
-      
+
       // Merge configurations with priority order
       this.currentConfig = this.mergeConfigurations([
         DEFAULT_AUTH_CONFIG,
@@ -74,11 +74,11 @@ export class AuthConfigurationService {
 
     } catch (error) {
       console.error('❌ [AUTH_CONFIG] Failed to initialize configuration:', error);
-      
+
       // Fallback to default configuration
       this.currentConfig = { ...DEFAULT_AUTH_CONFIG };
       this.isInitialized = true;
-      
+
       throw error;
     }
   }
@@ -124,7 +124,7 @@ export class AuthConfigurationService {
     try {
       // Save updated configuration
       await this.saveConfiguration(this.currentConfig);
-      
+
       // Notify listeners
       this.notifyConfigurationChange();
 
@@ -212,7 +212,7 @@ export class AuthConfigurationService {
    */
   onConfigurationChange(listener: (config: AuthConfiguration) => void): () => void {
     this.configListeners.push(listener);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.configListeners.indexOf(listener);
