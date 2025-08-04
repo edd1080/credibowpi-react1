@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "TypeScript Type Safety Check",
+  "description": "Verifica consistencia de tipos TypeScript y actualiza interfaces cuando hay cambios en servicios y definiciones de tipos",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "credibowpi-mobile/src/types/*.ts",
+      "credibowpi-mobile/src/services/*.ts",
+      "credibowpi-mobile/src/services/**/*.ts",
+      "credibowpi-mobile/Authentication/*.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Changes detected in TypeScript type definitions or services. Please:\n\n1. **Type Consistency Check**: Verify that all interfaces and types are consistent across the codebase\n2. **Service Interface Validation**: Ensure service implementations match their type definitions\n3. **Import/Export Analysis**: Check that all type imports and exports are correct\n4. **Interface Updates**: Update any interfaces that need to reflect the changes\n5. **Type Safety Verification**: Run TypeScript compiler to catch any type errors\n6. **Cross-Reference Check**: Verify that changes don't break existing type contracts\n\nFocus on maintaining strict TypeScript compliance and preventing runtime type errors. Update interfaces as needed to maintain type safety across the authentication system, services, and shared types."
+  }
+}

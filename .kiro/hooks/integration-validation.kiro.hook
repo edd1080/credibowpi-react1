@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "name": "Integration Validation",
+  "description": "Validates integration points and executes integration tests when core integration services and stores are modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "credibowpi-mobile/src/services/AuthIntegrationService.ts",
+      "credibowpi-mobile/src/services/BowpiAuthService.ts",
+      "credibowpi-mobile/src/services/AuthStoreManager.ts",
+      "credibowpi-mobile/src/services/SessionManagementService.ts",
+      "credibowpi-mobile/src/services/NetworkAwareService.ts",
+      "credibowpi-mobile/src/services/SecureHttpClient.ts",
+      "credibowpi-mobile/src/stores/authStore.ts",
+      "credibowpi-mobile/src/stores/appStore.ts",
+      "credibowpi-mobile/src/services/bowpi/*.ts",
+      "credibowpi-mobile/src/services/auth/*.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Changes detected in core integration services and stores. Please validate all integration points and execute integration tests to ensure existing integrations are not broken. Focus on:\n\n1. Authentication service integrations\n2. Store connections and data flow\n3. Network service dependencies\n4. Bowpi service integrations\n5. Session management flows\n\nRun the integration test suite and verify that all critical integration paths remain functional. Pay special attention to offline/online transitions and authentication flows."
+  }
+}

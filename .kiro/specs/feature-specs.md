@@ -15,6 +15,9 @@ Este documento centraliza todas las especificaciones de features para la aplicac
 - `requirements.md` - Requisitos funcionales y no funcionales
 - `design.md` - Arquitectura y diseño técnico
 - `tasks.md` - Plan de implementación y tareas
+- `prd.md` - Product Requirements Document
+- `tech-stack.md` - Stack tecnológico y dependencias
+- `arquitechture-app.md` - Arquitectura de la aplicación
 
 **Description**: Aplicación móvil React Native para agentes de campo que gestionan solicitudes de crédito con capacidades offline-first.
 
@@ -28,40 +31,22 @@ Este documento centraliza todas las especificaciones de features para la aplicac
 ### 🔐 Bowpi Authentication System
 **Location**: `.kiro/specs/bowpi-authentication-system/`
 
-**Status**: ✅ Complete Specification
+**Status**: 📋 Ready for Implementation
 
 **Documents**:
 - `requirements.md` - Requisitos del sistema de autenticación Bowpi
-- `design.md` - Arquitectura y diseño técnico del sistema
-- `tasks.md` - Plan de implementación y tareas
+- `design.md` - Arquitectura y diseño técnico del sistema de auth
+- `tasks.md` - Plan de implementación detallado
 
-**Description**: Sistema de autenticación seguro que integra microservicios Bowpi con capacidades offline-first y estándares OWASP.
+**Description**: Sistema de autenticación real que reemplaza la autenticación simulada actual, integrando con microservicios Bowpi siguiendo estándares OWASP y manteniendo funcionalidad offline-first.
 
 **Key Features**:
 - Cliente HTTP seguro con validación de dominios
-- Autenticación con tokens JWT y OTP
-- Gestión de sesiones offline
-- Interceptores de seguridad HMAC
-- Manejo de errores y recuperación
-
-### 📋 Credit Application Form System
-**Location**: `.kiro/specs/credit-application-form-system/`
-
-**Status**: ✅ Complete Specification
-
-**Documents**:
-- `requirements.md` - Requisitos del sistema de formularios de crédito
-- `design.md` - Arquitectura y diseño técnico del sistema
-- `tasks.md` - Plan de implementación y tareas
-
-**Description**: Sistema completo de formularios para solicitudes de crédito con navegación libre, auto-guardado y validaciones en tiempo real.
-
-**Key Features**:
-- Formularios modulares de 6 etapas
-- Navegación libre entre secciones
-- Auto-guardado en tiempo real
-- Validaciones dinámicas
-- Gestión de fiadores y documentos
+- Integración con microservicios de autenticación Bowpi
+- Procesamiento de JWT tokens encriptados
+- Generación automática de headers de seguridad (OTP, HMAC)
+- Lógica offline-first para login/logout
+- Manejo seguro de sesiones con requestId
 
 ## Spec Development Process
 

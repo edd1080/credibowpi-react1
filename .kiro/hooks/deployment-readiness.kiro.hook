@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "name": "Deployment Readiness",
+  "description": "Verifica configuraciones de producción y ejecuta tests de deployment cuando se modifican archivos críticos de producción y configuración",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "credibowpi-mobile/src/constants/production.ts",
+      "credibowpi-mobile/src/constants/environment.ts",
+      "credibowpi-mobile/src/constants/config.ts",
+      "credibowpi-mobile/app.json",
+      "credibowpi-mobile/package.json",
+      "credibowpi-mobile/scripts/deploy-production.sh",
+      "credibowpi-mobile/scripts/verify-deployment.js",
+      "credibowpi-mobile/src/__tests__/deployment/DeploymentVerification.test.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Critical production files have been modified. Please:\n\n1. **Verify Production Configuration**:\n   - Check that all production environment variables are properly set\n   - Validate API endpoints and security configurations\n   - Ensure no development/debug flags are enabled in production\n\n2. **Run Deployment Tests**:\n   - Execute deployment verification tests\n   - Run security audit checks\n   - Validate build configuration and dependencies\n\n3. **Check Configuration Consistency**:\n   - Verify app.json configuration matches production requirements\n   - Ensure package.json dependencies are production-ready\n   - Validate deployment scripts are up to date\n\n4. **Security Review**:\n   - Check for any hardcoded secrets or sensitive data\n   - Verify encryption and authentication configurations\n   - Ensure proper error handling for production environment\n\nPlease provide a summary of the verification results and any issues that need to be addressed before deployment."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Deployment Readiness",
+  "description": "Checks deployment readiness when production-critical files change",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/app.json",
+      "credibowpi-mobile/package.json",
+      "credibowpi-mobile/jest.config.js",
+      "credibowpi-mobile/expo.json",
+      "credibowpi-mobile/eas.json"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "Production-critical files have been modified. Please verify deployment readiness:\n\n1. **Build Configuration**: Check app.json, package.json, and build scripts for production readiness\n2. **Testing Configuration**: Verify test configurations support production validation\n3. **Performance Settings**: Check production performance and resource configurations\n\n**Production Readiness Validation**:\n- Validate build configurations\n- Check test configurations\n- Verify performance settings\n- Ensure proper error handling\n\nUpdate deployment documentation and ensure all production configurations are ready for deployment.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/package.json",
+      "credibowpi-mobile/app.json"
+    ]
+  },
+  "enabled": true
+}

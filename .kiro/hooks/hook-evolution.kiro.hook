@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "name": "Hook Evolution",
+  "description": "Meta-hook that automatically updates and optimizes existing hooks when new features or architectural changes are introduced, ensuring comprehensive coverage and performance",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "credibowpi-mobile/src/features/**/*.ts",
+      "credibowpi-mobile/src/features/**/*.tsx",
+      "credibowpi-mobile/src/screens/**/*.tsx",
+      "credibowpi-mobile/src/navigation/**/*.tsx",
+      "credibowpi-mobile/src/services/**/*.ts",
+      "credibowpi-mobile/src/components/**/*.tsx",
+      "credibowpi-mobile/package.json",
+      "credibowpi-mobile/app.json",
+      "credibowpi-mobile/tsconfig.json",
+      "credibowpi-mobile/jest.config.js",
+      ".kiro/specs/**/*.md",
+      ".kiro/steering/**/*.md",
+      "credibowpi-mobile/README.md",
+      "credibowpi-mobile/*_GUIDE.md",
+      "credibowpi-mobile/*_IMPLEMENTATION.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "New features or architectural changes have been detected in the CrediBowpi project. Please analyze and update the existing agent hooks to ensure they remain effective and comprehensive:\n\n## Analysis Required:\n\n1. **New Feature Detection**:\n   - Identify new features, services, or components added\n   - Analyze new file patterns and structures\n   - Detect new testing requirements or patterns\n   - Identify new security considerations\n\n2. **Hook Pattern Updates**:\n   - Update file patterns in existing hooks to cover new areas\n   - Add new trigger patterns for emerging file types\n   - Refine exclusion patterns for better performance\n   - Optimize hook specificity and reduce overlap\n\n3. **Hook Enhancement Opportunities**:\n   - **Documentation Sync**: Add patterns for new feature documentation\n   - **Test Maintenance**: Include new testing patterns and frameworks\n   - **Security Audit**: Cover new security-sensitive areas\n   - **Type Safety Check**: Include new type definition patterns\n   - **Integration Validation**: Add new integration points\n   - **Deployment Readiness**: Cover new production configurations\n\n4. **Performance Optimization**:\n   - Reduce hook trigger overlap\n   - Optimize file pattern matching\n   - Improve context relevance\n   - Minimize false positives\n\n5. **New Hook Suggestions**:\n   - Identify gaps in current hook coverage\n   - Suggest new hooks for emerging patterns\n   - Recommend specialized hooks for new features\n\n## Actions to Take:\n\n1. **Update Existing Hooks**: Modify .kiro/hooks/*.json files with:\n   - Enhanced file patterns\n   - Improved trigger conditions\n   - Updated context files\n   - Refined prompts for new scenarios\n\n2. **Create New Hooks**: If significant gaps are found:\n   - Design new hooks for uncovered areas\n   - Follow established naming and structure patterns\n   - Ensure integration with existing hook ecosystem\n\n3. **Hook Documentation**: Update hook descriptions and maintain hook registry\n\n## Current Hook Inventory:\n- documentation-sync.json\n- test-maintenance.json\n- security-audit.json\n- type-safety-check.json\n- integration-validation.json\n- deployment-readiness.json\n\nFocus on maintaining our development standards: comprehensive testing, security-first approach, type safety, documentation accuracy, and deployment reliability. Ensure hooks evolve with the project architecture while maintaining performance and avoiding redundancy."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Design System Maintenance",
+  "description": "Maintains design system consistency and component library integrity",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/constants/colors.ts",
+      "credibowpi-mobile/src/constants/typography.ts",
+      "credibowpi-mobile/src/constants/spacing.ts",
+      "credibowpi-mobile/src/constants/tokens.ts",
+      "credibowpi-mobile/src/components/atoms/**/*.tsx",
+      "credibowpi-mobile/src/components/molecules/**/*.tsx",
+      "credibowpi-mobile/src/components/organisms/**/*.tsx",
+      "credibowpi-mobile/src/examples/DesignSystemExample.tsx",
+      "credibowpi-mobile/DESIGN_SYSTEM.md"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      "**/*.test.tsx"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "Design system components or tokens have been modified. Please ensure design system consistency:\n\n1. **Design Token Consistency**: Verify all design tokens follow the 8pt grid system and CrediBowpi brand guidelines\n2. **Component Compliance**: Ensure components use design tokens correctly and maintain accessibility standards\n3. **Atomic Design Structure**: Verify proper atomic design hierarchy (atoms → molecules → organisms)\n4. **Typography System**: Ensure DM Sans font family usage and proper typography scale implementation\n5. **Color System**: Verify CrediBowpi brand colors and semantic color usage\n6. **Spacing System**: Ensure 8pt grid compliance with 4pt micro-adjustments\n7. **Accessibility Standards**: Verify 44pt touch targets and AA contrast ratios\n8. **Component Interface Consistency**: Ensure TypeScript interfaces are consistent across components\n9. **Design System Documentation**: Update design system documentation to reflect changes\n10. **Example Updates**: Ensure design system examples demonstrate current best practices\n\n**Specific Design System Checks**:\n- **Color Tokens**: Brand colors (#2A3575, #2973E7, #5DBDF9), semantic colors, neutral palette\n- **Typography Tokens**: DM Sans implementation, typography scale (H1-H3, Body L/M/S, Label, Caption)\n- **Spacing Tokens**: 8pt grid system (8, 16, 24, 32), 4pt micro-adjustments (4, 12, 20)\n- **Component Tokens**: Button variants, card styles, input styles, modal configurations\n- **Animation Tokens**: Duration and easing values for consistent motion\n- **Accessibility Tokens**: Touch target sizes, contrast ratios, focus indicators\n- **Button Component**: All variants (primary, secondary, tertiary, sync, retry), sizes, states\n- **Typography Component**: All variants, colors, weights, accessibility features\n- **Atomic Components**: Proper interface definitions, consistent prop patterns\n- **Molecule Components**: Proper composition of atomic components\n- **Organism Components**: Complex UI sections following design system\n\n**Design System Standards**:\n- Follow CrediBowpi brand guidelines\n- Maintain 8pt grid system compliance\n- Ensure accessibility standards (WCAG AA)\n- Use consistent component interfaces\n- Implement proper TypeScript typing\n- Follow atomic design methodology\n- Maintain design token centralization\n- Ensure responsive design principles\n- Implement proper component composition\n- Maintain design system documentation\n\n**Validation Tasks**:\n- Check design token usage across components\n- Verify component accessibility compliance\n- Test component variants and states\n- Validate TypeScript interfaces\n- Ensure proper component composition\n- Check design system documentation accuracy\n- Verify example implementations\n- Test responsive behavior\n- Validate brand guideline compliance\n- Ensure consistent component patterns\n\nUpdate design system documentation and ensure all components maintain consistency with the established design foundation.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/DESIGN_SYSTEM.md",
+      "credibowpi-mobile/src/constants/",
+      "credibowpi-mobile/src/components/",
+      "credibowpi-mobile/src/examples/DesignSystemExample.tsx"
+    ]
+  },
+  "enabled": true
+}

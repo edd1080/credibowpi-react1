@@ -1,0 +1,32 @@
+{
+  "name": "Documentation Sync",
+  "description": "Automatically updates documentation when source code changes",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/**/*.ts",
+      "credibowpi-mobile/src/**/*.tsx",
+      "credibowpi-mobile/package.json",
+      "credibowpi-mobile/tsconfig.json",
+      "credibowpi-mobile/jest.config.js",
+      "credibowpi-mobile/app.json"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/node_modules/**",
+      "**/.expo/**"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "A source file has been modified in the CrediBowpi mobile project. Please analyze the changes and update the relevant documentation:\n\n1. **Core Services**: Update README.md and relevant developer guides for service changes\n2. **Configuration**: Update setup instructions for config changes\n3. **API Documentation**: Update API documentation for service changes\n4. **Developer Guides**: Update developer guides for new features\n\nFocus on:\n- Keeping documentation accurate and up-to-date\n- Maintaining consistency with established patterns\n- Including code examples for complex features",
+    "context": [
+      "#File",
+      "credibowpi-mobile/README.md",
+      "credibowpi-mobile/DESIGN_SYSTEM.md"
+    ]
+  },
+  "enabled": true
+}

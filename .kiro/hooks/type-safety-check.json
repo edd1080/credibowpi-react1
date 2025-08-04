@@ -1,0 +1,27 @@
+{
+  "name": "Type Safety Check",
+  "description": "Ensures TypeScript types are updated when interfaces or services change",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/services/**/*.ts",
+      "credibowpi-mobile/src/types/**/*.ts",
+      "credibowpi-mobile/src/stores/**/*.ts",
+      "credibowpi-mobile/src/hooks/**/*.ts"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      "**/*.test.ts"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "TypeScript interfaces or services have been modified. Please ensure comprehensive type safety:\n\n1. **Interface Updates**: Check if type definitions need updates in src/types/\n2. **Service Contracts**: Verify service interfaces match implementations\n3. **Cross-Service Types**: Ensure shared types are consistent across services\n4. **Error Types**: Ensure error handling types cover all scenarios\n5. **Generic Types**: Verify proper generic type usage and constraints\n6. **Import/Export Types**: Ensure type import/export consistency\n\n**Type Safety Standards**:\n- Use strict TypeScript configuration\n- Avoid 'any' types where possible\n- Implement proper generic constraints\n- Use discriminated unions for complex types\n- Ensure null safety with proper optional types\n- Implement proper error type hierarchies\n\nRun type checking, fix any TypeScript errors, and update type definitions to maintain strict typing throughout the application.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/src/types/",
+      "credibowpi-mobile/tsconfig.json"
+    ]
+  },
+  "enabled": true
+}

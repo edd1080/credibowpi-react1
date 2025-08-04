@@ -1,0 +1,23 @@
+{
+  "name": "Integration Validation",
+  "description": "Validates integration points when core services are modified",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/services/**/*.ts",
+      "credibowpi-mobile/src/stores/**/*.ts",
+      "credibowpi-mobile/src/hooks/**/*.ts"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "Core integration services have been modified. Please validate integration points:\n\n1. **Service Integration**: Verify services work together correctly across the system\n2. **State Management**: Check store integrations, data flow, and state consistency\n3. **Hook Integration**: Validate custom hooks with services and stores\n4. **Error Propagation**: Verify error handling across all service boundaries\n\n**Integration Testing Areas**:\n- Service interactions\n- State synchronization\n- Error handling across services\n- Hook dependencies\n\nRun integration tests, update them if needed, and ensure all integration points remain functional after changes.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/src/__tests__/integration/",
+      "credibowpi-mobile/src/services/",
+      "credibowpi-mobile/src/stores/"
+    ]
+  },
+  "enabled": true
+}

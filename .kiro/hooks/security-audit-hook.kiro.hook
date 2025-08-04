@@ -1,0 +1,29 @@
+{
+  "enabled": true,
+  "name": "Security Audit",
+  "description": "Monitors changes to authentication, cryptography, and security-related code to review security implications and update security documentation",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "credibowpi-mobile/Authentication/*",
+      "credibowpi-mobile/src/services/bowpi/*",
+      "credibowpi-mobile/src/services/BowpiSecureStorageService.ts",
+      "credibowpi-mobile/src/services/SecureHttpClient.ts",
+      "credibowpi-mobile/src/services/SecurityLoggingService.ts",
+      "credibowpi-mobile/src/services/SuspiciousActivityMonitor.ts",
+      "credibowpi-mobile/src/services/auth/*",
+      "credibowpi-mobile/src/hooks/useBowpiAuth.ts",
+      "credibowpi-mobile/src/hooks/useNetworkAwareAuth.ts",
+      "credibowpi-mobile/src/hooks/useSessionManagement.ts",
+      "credibowpi-mobile/src/hooks/useSessionRecovery.ts",
+      "credibowpi-mobile/bowpi-auth-documentation/SECURITY_GUIDELINES.md",
+      "credibowpi-mobile/src/__tests__/security/*",
+      "credibowpi-mobile/src/__tests__/security-performance/*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Security-related code has been modified. Please perform a comprehensive security audit of the changes:\n\n1. **Authentication Security Review:**\n   - Analyze changes to authentication flows and dual auth system\n   - Verify proper token handling and session management\n   - Check for authentication bypass vulnerabilities\n   - Review cryptographic implementations\n\n2. **Data Protection Assessment:**\n   - Examine secure storage implementations\n   - Verify encryption/decryption processes\n   - Check for data leakage risks\n   - Review secure communication protocols\n\n3. **Security Documentation Update:**\n   - Update SECURITY_GUIDELINES.md with any new security considerations\n   - Document security implications of the changes\n   - Update security testing requirements if needed\n   - Ensure compliance with dual authentication security standards\n\n4. **Vulnerability Analysis:**\n   - Check for common security vulnerabilities (OWASP Mobile Top 10)\n   - Verify input validation and sanitization\n   - Review error handling for information disclosure\n   - Assess logging practices for sensitive data exposure\n\n5. **Recommendations:**\n   - Provide specific security recommendations\n   - Suggest additional security tests if needed\n   - Identify any security risks that need immediate attention\n\nFocus on maintaining the high security standards required for the dual authentication system and financial data protection."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "Dual Authentication System",
+  "description": "Monitors and validates the dual authentication system and migration components",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/services/auth/**/*.ts",
+      "credibowpi-mobile/src/services/AuthStoreManager.ts",
+      "credibowpi-mobile/src/services/AuthIntegrationService.ts",
+      "credibowpi-mobile/src/services/AuthMigrationService.ts",
+      "credibowpi-mobile/src/services/SessionFormatConverter.ts",
+      "credibowpi-mobile/src/services/FeatureFlagService.ts",
+      "credibowpi-mobile/src/types/auth-providers.ts",
+      "credibowpi-mobile/src/types/auth-shared.ts",
+      "credibowpi-mobile/src/screens/DeveloperSettings.tsx",
+      "credibowpi-mobile/src/hooks/useBowpiAuth.ts",
+      "credibowpi-mobile/src/hooks/useSessionManagement.ts"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      "**/*.test.ts",
+      "**/*.test.tsx"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "Dual authentication system components have been modified. Please validate the system integrity:\n\n1. **Provider System**: Verify auth provider factory, configuration, and switching logic\n2. **Migration System**: Ensure migration services work correctly with dual auth\n3. **Session Management**: Validate session handling across both auth systems\n4. **Feature Flags**: Ensure feature flags properly control dual auth behavior\n5. **Store Integration**: Verify AuthStoreManager works with both providers\n6. **Type Safety**: Ensure all auth-related types are consistent and comprehensive\n7. **Developer Tools**: Validate developer settings and debugging capabilities\n8. **Hook Integration**: Ensure custom hooks work with both auth systems\n9. **Configuration Management**: Verify auth configuration handles both systems\n10. **Error Handling**: Ensure proper error handling across all auth components\n\n**Specific Dual Auth Validations**:\n- **Provider Factory**: Creation, caching, health checks, and cleanup of providers\n- **Auth Configuration**: Multi-source configuration loading and validation\n- **Provider Switching**: Runtime switching logic, validation, and fallback mechanisms\n- **Legacy Provider**: Mock authentication, session simulation, and offline capabilities\n- **Bowpi Provider**: Integration with existing Bowpi services and data conversion\n- **Migration Services**: Legacy data detection, conversion, and cleanup processes\n- **Session Conversion**: Format conversion between legacy and Bowpi sessions\n- **Feature Flag Integration**: Rollout control, emergency switches, and user assignment\n- **Store Manager**: Provider orchestration, state management, and event handling\n- **Developer Settings**: UI controls, debugging information, and system status\n- **Type Consistency**: Interface compliance, type safety, and generic constraints\n- **Hook Compatibility**: Custom hooks working with both authentication systems\n\n**System Integrity Checks**:\n- Verify provider interface compliance\n- Test switching mechanisms and validation\n- Ensure migration data integrity\n- Validate session format conversion\n- Check feature flag behavior\n- Test error propagation and handling\n- Verify configuration precedence\n- Ensure proper cleanup and resource management\n- Test fallback and recovery mechanisms\n- Validate developer tools functionality\n\n**Documentation Updates**:\n- Update dual authentication developer guide\n- Ensure migration implementation summary is current\n- Update API documentation for changed interfaces\n- Verify troubleshooting guides are accurate\n\nRun dual authentication tests and ensure the system maintains its flexibility, reliability, and developer experience.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/DUAL_AUTH_DEVELOPER_GUIDE.md",
+      "credibowpi-mobile/DUAL_AUTHENTICATION_IMPLEMENTATION.md",
+      "credibowpi-mobile/MIGRATION_IMPLEMENTATION_SUMMARY.md",
+      "credibowpi-mobile/src/__tests__/dual-auth/",
+      "credibowpi-mobile/src/services/auth/",
+      "credibowpi-mobile/src/types/"
+    ]
+  },
+  "enabled": true
+}

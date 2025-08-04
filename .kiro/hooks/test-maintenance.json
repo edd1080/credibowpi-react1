@@ -1,0 +1,28 @@
+{
+  "name": "Test Maintenance",
+  "description": "Maintains and updates tests when source code changes",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/services/**/*.ts",
+      "credibowpi-mobile/src/components/**/*.tsx",
+      "credibowpi-mobile/src/hooks/**/*.ts",
+      "credibowpi-mobile/src/stores/**/*.ts"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      "**/*.test.ts",
+      "**/*.test.tsx"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "A source file has been modified that may require test updates. Please:\n\n1. **Analyze Changes**: Identify what functionality was modified and its testing requirements\n2. **Test Coverage Assessment**: Check if corresponding tests exist and need updates\n3. **Missing Tests**: Suggest creating tests following our established patterns\n4. **Test Updates**: Update existing tests if API or behavior changed\n5. **Comprehensive Coverage**: Ensure test coverage remains comprehensive\n6. **Testing Standards**: Follow Jest + React Native Testing Library conventions\n\n**Testing Patterns to Follow**:\n- Unit tests for individual services\n- Integration tests for service interactions\n- Mock external dependencies appropriately\n- Test error scenarios and edge cases\n- Maintain test isolation and cleanup",
+    "context": [
+      "#File",
+      "credibowpi-mobile/jest.config.js",
+      "credibowpi-mobile/src/__tests__/setup.ts"
+    ]
+  },
+  "enabled": true
+}

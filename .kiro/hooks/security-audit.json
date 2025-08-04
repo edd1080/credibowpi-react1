@@ -1,0 +1,24 @@
+{
+  "name": "Security Audit",
+  "description": "Reviews security implications of authentication and sensitive code changes",
+  "trigger": {
+    "type": "file_change",
+    "patterns": [
+      "credibowpi-mobile/src/services/auth/**/*.ts",
+      "credibowpi-mobile/src/services/*Auth*.ts",
+      "credibowpi-mobile/src/services/*Crypto*.ts",
+      "credibowpi-mobile/src/services/*Security*.ts",
+      "credibowpi-mobile/src/services/secureStorage.ts",
+      "credibowpi-mobile/src/types/auth*.ts"
+    ]
+  },
+  "action": {
+    "type": "agent_request",
+    "prompt": "Security-sensitive code has been modified. Please perform a comprehensive security review:\n\n1. **Authentication Security**: Review authentication flows and security\n2. **Data Protection**: Ensure sensitive data encryption, secure storage, and data minimization\n3. **Token Management**: Verify secure token handling, storage, and lifecycle management\n4. **Session Security**: Review session creation, validation, and termination processes\n5. **Input Validation**: Check for proper input sanitization and injection prevention\n6. **Error Handling**: Ensure errors don't leak sensitive information or system details\n7. **Crypto Implementation**: Verify cryptographic operations follow OWASP standards\n8. **Network Security**: Review HTTPS enforcement, certificate pinning, domain validation\n\n**Security Standards to Verify**:\n- OWASP Mobile Security guidelines compliance\n- Defense in depth implementation\n- Principle of least privilege\n- Secure by default configurations\n- Data encryption at rest and in transit\n\nUpdate security documentation and flag any potential security issues with severity levels.",
+    "context": [
+      "#File",
+      "credibowpi-mobile/src/__tests__/security/"
+    ]
+  },
+  "enabled": true
+}
